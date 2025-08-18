@@ -1,0 +1,207 @@
+/* -----------------------------
+   ✅ 웹폰트 정의
+----------------------------- */
+@font-face {
+  font-family: 'Ownglyph_ParkDaHyun';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2411-3@1.0/Ownglyph_ParkDaHyun.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ownglyph_corncorn-Rg';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2412-1@1.0/Ownglyph_corncorn-Rg.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* -----------------------------
+   ✅ 초기화 및 기본 설정
+----------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #f5f0ea;
+  color: #000;
+  font-family: 'Ownglyph_ParkDaHyun', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+  margin-top: 100px; /* ✅ header 공간 확보 */
+}
+
+/* -----------------------------
+   ✅ 챗봇 박스 & 구조
+----------------------------- */
+.chatbox {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 60px auto; /* ✅ 위 여백은 padding으로 뺐으니 0 */
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fff;
+}
+
+.chat-message {
+  max-width: 80%;
+  padding: 14px 20px;
+  border-radius: 20px;
+  margin: 8px 0;
+  word-break: break-word;
+  font-size: 17px;
+}
+
+.chat-message.user {
+  background-color: #fff9c4 !important;
+  align-self: flex-end;
+  margin-left: auto;
+  border-bottom-right-radius: 0;
+}
+
+.chat-message.bot {
+  background-color: #f1f0f0;
+  align-self: flex-start;
+  margin-right: auto;
+  border-bottom-left-radius: 0;
+}
+
+.user-input {
+  display: flex;
+  gap: 10px;
+}
+
+.user-input input[type="text"] {
+  flex-grow: 1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #fffde7;
+  font-size: 16px;
+}
+
+.user-input button {
+  background-color: #ffcc80;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 28px;         /* ✅ 더 넉넉하게 키움 */
+  font-size: 16px;            /* ✅ 글씨도 살짝 키움 */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.user-input button:hover {
+  background-color: #ffb74d;
+  transform: scale(1.05);
+}
+
+/* -----------------------------
+   ✅ 커스텀 마우스 커서
+----------------------------- */
+.custom-cursor {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: #ff6b6b;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: difference;
+  transition: transform 0.1s ease;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor.hover {
+  transform: scale(2) translate(-50%, -50%);
+}
+/* -----------------------------
+   ✅ 챗봇 말풍선
+----------------------------- */
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* -----------------------------
+   ✅ 챗봇 헤더
+----------------------------- */
+.chat-header {
+  background-color: #f9fbe7;
+  padding: 24px 30px;
+  border-radius: 16px 16px 0 0;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1.5px solid #e0e0e0;   /* ✅ 얇은 테두리 추가 */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06); /* ✅ 은은한 그림자 */
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.chat-header p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #777;
+}
+
+#particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;  /* 클릭 막지 않도록 */
+  z-index: -1;           /* 배경 뒤로 */
+}
+
+.particle {
+  position: absolute;
+  animation-name: fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
