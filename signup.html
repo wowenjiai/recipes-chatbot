@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회원가입</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background-color: #f4f6f8;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .signup-container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-bottom: 24px;
+      text-align: center;
+      color: #333;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2d89ef;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #1b6dc1;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <h2>회원가입</h2>
+    <form id="signup-form">
+      <input type="text" placeholder="아이디" name="userid" required />
+      <input type="password" placeholder="비밀번호" name="password" required />
+      <input type="text" placeholder="이름" name="name" required />
+      <input type="text" placeholder="닉네임" name="nickname" required />
+      <input type="date" name="dob" required />
+      <select name="gender" required>
+        <option value="">성별 선택</option>
+        <option value="남자">남자</option>
+        <option value="여자">여자</option>
+        <option value="기타">기타</option>
+      </select>
+      <button type="submit">가입하기</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async function (e) {
+      e.preventDefault();  // 새로고침 막기
+
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        alert(result.message);
+      } catch (error) {
+        alert("서버 요청 실패: " + error);
+      }
+    });
+  </script>
+</body>
+</html>

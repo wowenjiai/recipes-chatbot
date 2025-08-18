@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 뭐 먹지? | 냉장고를 부탁해</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .wheel {
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      border: 10px solid white;
+      background: conic-gradient(
+        #fca5a5,
+        #fcd34d,
+        #6ee7b7,
+        #93c5fd,
+        #fca5a5
+      );
+      transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .wheel-label {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: center center;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+      text-align: center;
+      width: 140px;
+      margin-left: -70px;
+    }
+    .arrow {
+      width: 0;
+      height: 0;
+      border-top: 30px solid #ef4444;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+  @keyframes bounceIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+  .result-card {
+    animation: bounceIn 1s ease;
+  }
+
+  </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 via-orange-50 to-yellow-50 text-gray-800">
+
+  <nav class="bg-white/60 backdrop-blur-md shadow-md fixed top-0 w-full z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-ice-cream text-2xl text-orange-400 animate-bounce"></i>
+        <a href="home.html" class="text-xl font-bold text-black">냉장고를 부탁해</a>
+      </div>
+      <div class="hidden md:flex space-x-6 font-medium">
+        <a href="home.html" class="hover:text-orange-500">Home</a>
+        <a href="contents.html" class="text-orange-500 font-semibold">Contents</a>
+        <a href="mypage.html" class="hover:text-orange-500">My Page</a>
+        <a href="login.html" class="hover:text-orange-500">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-44 max-w-xl mx-auto px-4 text-center">
+    <h1 class="text-4xl md:text-5xl font-extrabold text-rose-500 mb-6">🍽 오늘 뭐 먹지?</h1>
+    <p class="mb-8 text-gray-600">원하는 메뉴를 직접 입력해 룰렛을 돌려보세요!</p>
+<div class="relative flex flex-col items-center mb-10">
+  <img src="/mnt/data/2723b84b-b041-4af4-9325-ab849b2f5d07.png" class="w-28 mb-4 animate-float" />
+  <div class="bg-white/80 border border-orange-200 rounded-xl px-6 py-4 shadow-lg max-w-sm text-center">
+    <h1 class="text-3xl font-bold text-rose-500">🍽 오늘 뭐 먹지?</h1>
+    <p class="text-gray-600 mt-2">원하는 메뉴를 직접 입력해 룰렛을 돌려보세요!</p>
+  </div>
+</div>
+    <div class="flex justify-center items-center gap-3 mb-4">
+      <input id="countInput" type="number" min="2" max="10" value="4"
+        class="w-20 px-3 py-2 border border-gray-300 rounded-lg shadow-inner text-center">
+      <button onclick="generateInputs()"
+        class="bg-gradient-to-r from-orange-400 to-rose-400 text-white px-4 py-2 rounded-lg shadow hover:scale-105 transition">
+        입력폼 생성
+      </button>
+    </div>
+
+    <div id="inputContainer" class="grid grid-cols-2 gap-2 mb-6"></div>
+
+    <button onclick="drawWheel()"
+      class="bg-rose-500 text-white px-6 py-2 rounded-full shadow hover:bg-rose-600 transition">
+      룰렛 돌리기 🎲
+    </button>
+
+    <div class="relative mt-14 flex justify-center">
+      <div class="relative">
+        <div class="arrow"></div>
+        <div id="wheel" class="wheel flex items-center justify-center">
+          <span class="text-white text-lg">룰렛을 생성하세요</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="result" class="mt-10 mb-32 min-h-[80px] text-2xl text-rose-500 font-bold flex justify-center items-center"></div>
+  </main>
+  <footer class="bg-gray-900 text-white py-8 fade-in">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center fade-in">
+      <div class="mb-6 md:mb-0 fade-in">
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-ice-cream text-2xl text-orange-400"></i>
+          <span class="text-xl font-bold">냉장고를 부탁해</span>
+        </div>
+        <p class="text-sm text-gray-400 mt-2">당신의 냉장고를 책임지는 AI 챗봇 서비스</p>
+      </div>
+      <div class="flex space-x-5 fade-in">
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="text-center text-gray-500 mt-6 text-sm fade-in">
+      © 2025 냉장고를 부탁해. All rights reserved.
+    </div>
+  </footer>
+  <script>
+    let options = [];
+    let angle = 0;
+
+    function generateInputs() {
+      const count = parseInt(document.getElementById('countInput').value);
+      const container = document.getElementById('inputContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `${i + 1}번 메뉴`;
+        input.className = 'p-2 border border-gray-300 rounded shadow text-sm text-center';
+        container.appendChild(input);
+      }
+    }
+
+    function drawWheel() {
+      const inputs = document.querySelectorAll('#inputContainer input');
+      options = Array.from(inputs).map(input => input.value.trim()).filter(v => v);
+      if (options.length < 2) return alert('최소 2개의 메뉴를 입력해주세요');
+
+      const wheel = document.getElementById('wheel');
+      const degreePerOption = 360 / options.length;
+      const colors = ['#f87171','#fbbf24','#34d399','#60a5fa','#f472b6','#a78bfa','#fcd34d','#6ee7b7','#fb7185','#c084fc'];
+
+      let gradient = options.map((_, i) => {
+        const color = colors[i % colors.length];
+        return `${color} ${i * degreePerOption}deg ${(i + 1) * degreePerOption}deg`;
+      }).join(', ');
+      wheel.style.background = `conic-gradient(${gradient})`;
+
+      wheel.innerHTML = '';
+      options.forEach((text, i) => {
+  const label = document.createElement('div');
+  const midAngle = i * degreePerOption + degreePerOption / 2;
+  
+  label.className = 'wheel-label';
+  label.style.transform = `rotate(${midAngle}deg) translateY(-130px)`; // 중앙에서 약간 더 바깥쪽
+
+  label.innerHTML = `
+    <div style="
+      transform: rotate(${-midAngle}deg); 
+      font-size: 20px;
+      font-weight: 700;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 1.2;
+    ">
+      ${text}
+    </div>
+  `;
+  wheel.appendChild(label);
+});
+      const randomSpin = Math.floor(Math.random() * 360) + 1440;
+      angle += randomSpin;
+      wheel.style.transform = `rotate(${angle}deg)`;
+
+      const selectedIndex = Math.floor(((360 - (angle % 360)) % 360) / degreePerOption);
+      const selected = options[selectedIndex];
+
+      setTimeout(() => {
+  const result = document.getElementById('result');
+  result.innerHTML = `
+    <div class="result-card inline-block px-6 py-4 bg-white rounded-2xl shadow-xl text-3xl font-bold text-rose-500 border-2 border-rose-400 ">
+      🍽 오늘은 <span class="text-orange-500">"${selected}"</span> 어때요?
+    </div>
+  `;
+  
+}, 4200);
+    }
+  </script>
+</body>
+</html>
