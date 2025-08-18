@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 뭐 먹지? | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body class="rouletteBody">
+
+  {% include 'header.html' %}
+
+  <main>
+
+    <h1 class="roulette-title">오늘 뭐 먹지?</h1>
+    <p class="roulette-subtitle">원하는 메뉴를 직접 입력해 룰렛을 돌려보세요!</p>
+
+    <div class="count-input">
+      <input id="countInput" type="number" min="2" max="10" value="4" class="input-count">
+      <button onclick="generateInputs()" class="btn-create">입력폼 생성</button>
+    </div>
+
+    <div class="wheel-wrapper">
+      <img src="/static/images/wheel-arrow.png" class="wheel-arrow"></img>
+
+      <div class="wheel-container">
+        <div id="wheel" class="wheel wheel-idle"></div>
+
+        <div class="input-overlay" id="inputOverlay">
+          <div id="menuInput" class="menu-input"></div>
+          <div class="btn-container">
+          <button class="btn-input-cancel">취소</button><button onclick="drawWheel()" class="btn-spin">시작</button>
+          </div>
+        </div>
+
+        <div id="rouletteResult" class="roulette-result-box"></div>
+        <div class="wheel-center-circle"></div>
+      </div>
+      <img src="/static/images/logo.png" class="wheelLogo">
+    </div>
+
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      let options = [];
+      let angle = 0;
+
+      // ✅ 숫자만큼 input 생성 + 오버레이 띄우기
+      window.generateInputs = function () {
+        const count = parseInt(document.getElementById('countInput').value);
+        const container = document.getElementById('menuInput');
+        const overlay = document.getElementById('inputOverlay');
+
+        if (isNaN(count) || count < 2) {
+          alert('2개 이상의 숫자를 입력하세요.');
+          return;
+        }
+
+        // ✅ 기존 결과 박스 내용 초기화
+        const result = document.getElementById('rouletteResult');
+        result.innerHTML = '';
+
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = `${i + 1}번 메뉴`;
+          input.className = 'input-text';
+          container.appendChild(input);
+        }
+
+        overlay.classList.add('active');
+      };
+
+      // ✅ 룰렛 그리기 및 돌리기
+      window.drawWheel = function () {
+        const inputs = document.querySelectorAll('#menuInput input');
+        options = Array.from(inputs)
+          .map(input => input.value.trim())
+          .filter(v => v);
+
+        if (options.length < 2) {
+          return alert('최소 2개의 메뉴를 입력해주세요');
+        }
+
+        const overlay = document.getElementById('inputOverlay');
+        overlay.classList.remove('active');
+
+        const wheel = document.getElementById('wheel');
+        wheel.classList.remove('wheel-idle');
+
+        const degreePerOption = 360 / options.length;
+        const colors = ['white', 'blue', 'rgb(252, 252, 84)', 'beige'];
+
+        const gradient = options.map((_, i) => {
+          const color = colors[i % colors.length];
+          return `${color} ${i * degreePerOption}deg ${(i + 1) * degreePerOption}deg`;
+        }).join(', ');
+        wheel.style.background = `conic-gradient(${gradient})`;
+
+        wheel.innerHTML = '';
+        options.forEach((text, i) => {
+          const label = document.createElement('div');
+          const midAngle = i * degreePerOption + degreePerOption / 2;
+          label.className = 'wheel-label';
+          label.style.transform = `rotate(${midAngle}deg) translateY(-130px)`;
+          label.innerHTML = `
+        <div style="transform: rotate(${-midAngle}deg); font-size: 30px; font-weight: 500; width: 100%; display: flex; justify-content: center; align-items: center; line-height: 1.2;">
+          ${text}
+        </div>`;
+          wheel.appendChild(label);
+        });
+
+        const spinAmount = Math.floor(Math.random() * 360) + 1440;
+        angle += spinAmount;
+
+        wheel.style.transition = 'none';
+        wheel.style.transform = `rotate(${angle - spinAmount}deg)`;
+
+        requestAnimationFrame(() => {
+          wheel.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
+          wheel.style.transform = `rotate(${angle}deg)`;
+        });
+
+        const normalizedAngle = (angle % 360 + 360) % 360;
+        const selectedIndex = Math.floor((360 - normalizedAngle) / degreePerOption) % options.length;
+        const selected = options[selectedIndex];
+
+        setTimeout(() => {
+          const result = document.getElementById('rouletteResult');
+          result.innerHTML = `
+        <div class="roulette-result-card">
+          🎉 오늘은 <span>${selected}</span> !
+        </div>
+      `;
+        }, 4200);
+      };
+    });
+  </script>
+
+</body>
+
+</html>

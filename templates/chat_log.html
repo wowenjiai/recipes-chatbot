@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html data-theme="business" lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>대화 로그 | 냉장고를 부탁해</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css" rel="stylesheet" />
+</head>
+
+<body class="bg-base-100 text-white p-6">
+  <div class="mb-6 flex justify-between items-center">
+    <h2 class="text-xl font-bold">[{{ user_id }}]님의 대화 로그</h2>
+    <a href="/admin/dashboard" class="btn btn-sm btn-outline">← 돌아가기</a>
+  </div>
+
+  {% if chats %}
+  <div class="overflow-x-auto bg-base-200 rounded-lg shadow">
+    <table class="table table-zebra w-full text-sm">
+      <thead>
+        <tr>
+          <th>사용자 입력</th>
+          <th>GPT 응답</th>
+          <th>시간</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for chat in chats %}
+        <tr>
+          <td class="whitespace-pre-wrap">{{ chat.user_input }}</td>
+          <td class="whitespace-pre-wrap">{{ chat.gpt_response }}</td>
+          <td>{{ chat.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-center text-gray-400 mt-10">대화 로그가 없습니다.</p>
+  {% endif %}
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입 완료 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% include 'header.html' %}
+
+  <main class="auth-container">
+    <h1>🎉회원가입이 완료되었습니다!</h1>
+    <p>이제 로그인하여 다양한 기능을 이용해보세요.</p>
+    <a href="/signin" class="btn-go-login">로그인 하러 가기</a>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+</body>
+
+</html>

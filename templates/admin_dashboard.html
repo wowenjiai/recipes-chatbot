@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html data-theme="business" lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>회원 목록 | 냉장고를 부탁해</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css" rel="stylesheet" />
+</head>
+
+<body class="bg-base-100 text-white p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">회원 목록</h1>
+    <form method="get" action="/admin/dashboard" class="form-control w-full max-w-xs mb-4">
+      <input type="text" name="query" placeholder="아이디 또는 이름 검색" class="input input-bordered" value="{{ query or '' }}">
+    </form>
+    <a href="/admin/logout" class="btn btn-sm btn-outline">로그아웃</a>
+  </div>
+
+  {% if members %}
+  <div class="overflow-x-auto bg-base-200 rounded-lg shadow">
+    <table class="table table-zebra w-full">
+      <thead>
+        <tr>
+          <th>아이디</th>
+          <th>이름</th>
+          <th>닉네임</th>
+          <th>생년월일</th>
+          <th>성별</th>
+          <th>가입일</th>
+          <th>관리</th>
+        </tr>
+      </thead>
+      <tbody class="bg-base-100">
+        {% for member in members %}
+        <tr>
+          <td>{{ member.userid }}</td>
+          <td>{{ member.name }}</td>
+          <td>{{ member.nickname }}</td>
+          <td>{{ member.dob }}</td>
+          <td>{{ member.gender }}</td>
+          <td>{{ member.created_at }}</td>
+          <td class="flex gap-2">
+            <a href="/admin/chat/{{ member.userid }}" class="btn btn-sm btn-accent">대화보기</a>
+            <a href="/admin/edit/{{ member.userid }}" class="btn btn-sm btn-warning">수정</a>
+            <a href="/admin/delete/{{ member.userid }}" class="btn btn-sm btn-error"
+              onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-center mt-10 text-gray-400">가입된 회원이 없습니다.</p>
+  {% endif %}
+</body>
+
+</html>

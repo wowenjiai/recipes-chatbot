@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>회원가입 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% include 'header.html' %}
+
+  <main class="auth-container">
+    <h1>회원가입</h1>
+    <form method="post" action="/signup" class="signup-form">
+      <!-- 아이디 -->
+      <label for="userid">아이디</label>
+      <input type="text" name="userid" id="userid" value="{{ form.userid if form else '' }}" required>
+      {% if errors.userid %}<small id="userid-warning" class="warning server-error">{{ errors.userid }}</small>{% else
+      %}<small id="userid-warning" class="warning"></small>{% endif %}
+
+
+      <!-- 비밀번호 -->
+      <label for="password">비밀번호</label>
+      <input type="password" name="password" id="password" required>
+      {% if errors.password %}<small id="pw-warning" class="warning server-error">{{ errors.password }}</small>{% else
+      %}<small id="pw-warning" class="warning"></small>{% endif %}
+
+
+      <!-- 이름 -->
+      <label for="name">이름</label>
+      <input type="text" name="name" id="name" value="{{ form.name if form else '' }}" required>
+      {% if errors.name %}<small id="name-warning" class="warning server-error">{{ errors.name }}</small>{% else
+      %}<small id="name-warning" class="warning"></small>{% endif %}
+
+
+      <!-- 닉네임 -->
+      <label for="nickname">닉네임</label>
+      <input type="text" name="nickname" id="nickname" maxlength="50" value="{{ form.nickname if form else '' }}"
+        required>
+      {% if errors.nickname %}<small id="nickname-warning" class="warning server-error">{{ errors.nickname }}</small>{%
+      else %}<small id="nickname-warning" class="warning"></small>{% endif %}
+
+
+      <!-- 생년월일 -->
+      <label for="dob">생년월일</label>
+      <input type="date" name="dob" id="dob" value="{{ form.dob if form else '' }}">
+      {% if errors.dob %}<small id="dob-warning" class="warning server-error">{{ errors.dob }}</small>{% else %}<small
+        id="dob-warning" class="warning"></small>{% endif %}
+
+
+      <!-- 성별 -->
+      <label for="gender">성별</label>
+      <select name="gender" id="gender" required>
+        <option value="">성별 선택</option>
+        <option value="남자" {% if form.gender=='남자' %}selected{% endif %}>남</option>
+        <option value="여자" {% if form.gender=='여자' %}selected{% endif %}>여</option>
+        <option value="기타" {% if form.gender=='기타' %}selected{% endif %}>기타</option>
+      </select>
+
+      <!-- 서버 에러 -->
+      {% if errors.general %}
+      <div id="general-error" class="error">{{ errors.general }}</div>
+      {% endif %}
+
+      <button type="submit">회원가입</button>
+    </form>
+  </main>
+
+  {% include 'footer.html' %}
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <script>
+    // ✅ 유효성 검사
+    document.addEventListener("DOMContentLoaded", () => {
+      const userid = document.getElementById('userid');
+      const password = document.getElementById('password');
+      const nameInput = document.getElementById('name');
+      const nicknameInput = document.getElementById('nickname');
+      const dob = document.getElementById('dob');
+
+      const useridWarning = document.getElementById('userid-warning');
+      const pwWarning = document.getElementById('pw-warning');
+      const nameWarning = document.getElementById('name-warning');
+      const nicknameWarning = document.getElementById('nickname-warning');
+      const dobWarning = document.getElementById('dob-warning');
+      const generalError = document.getElementById("general-error");
+
+      if (generalError) {
+        const inputs = document.querySelectorAll(".signupForm input, #signupForm select");
+        inputs.forEach(input => {
+          input.addEventListener("input", () => {
+            generalError.style.display = "none";
+          });
+        });
+      }
+
+      // 서버 에러가 있더라도, 사용자 입력 시 JS 검증이 다시 활성화되도록
+      function clearServerError(el) {
+        if (el.classList.contains('server-error')) {
+          el.textContent = '';
+          el.classList.remove('server-error');
+        }
+      }
+
+      function validateUserid() {
+        clearServerError(useridWarning);
+        if (userid.value.trim() === '') {
+          useridWarning.textContent = '';
+          return;
+        }
+        const regex = /^[a-zA-Z0-9]+$/;
+        useridWarning.textContent = (!regex.test(userid.value)) ? '❗ 아이디는 영어와 숫자만 사용할 수 있습니다.' : '';
+      }
+
+      function validatePassword() {
+        clearServerError(pwWarning);
+        if (password.value.trim() === '') {
+          pwWarning.textContent = '';
+          return;
+        }
+        pwWarning.textContent = (password.value.length < 8) ? '❗ 비밀번호는 8자 이상이어야 합니다.' : '';
+      }
+
+      function validateName() {
+        clearServerError(nameWarning);
+        if (nameInput.value.trim() === '') {
+          nameWarning.textContent = '';
+          return;
+        }
+        nameWarning.textContent = (nameInput.value.trim().length < 2) ? '❗ 이름은 2자 이상이어야 합니다.' : '';
+      }
+
+      function validateNickname() {
+        clearServerError(nicknameWarning);
+        if (nicknameInput.value.trim() === '') {
+          nicknameWarning.textContent = '';
+          return;
+        }
+        if (nicknameInput.value.length < 2 || nicknameInput.value.length > 50) {
+          nicknameWarning.textContent = '❗ 닉네임은 2자 이상 50자 이하여야 합니다.';
+        } else {
+          nicknameWarning.textContent = '';
+        }
+      }
+
+      function validateDob() {
+        clearServerError(dobWarning);
+        if (dob.value.trim() === '') {
+          dobWarning.textContent = '';
+          return;
+        }
+        const today = new Date().toISOString().split('T')[0];
+        dobWarning.textContent = (dob.value > today) ? '❗ 생년월일은 오늘보다 이전이어야 합니다.' : '';
+      }
+
+      // 이벤트 리스너 (입력/포커스 시)
+      userid.addEventListener('input', validateUserid);
+      password.addEventListener('input', validatePassword);
+      nameInput.addEventListener('input', validateName);
+      nicknameInput.addEventListener('input', validateNickname);
+      dob.addEventListener('change', validateDob);
+
+      userid.addEventListener('blur', validateUserid);
+      password.addEventListener('blur', validatePassword);
+      nameInput.addEventListener('blur', validateName);
+      nicknameInput.addEventListener('blur', validateNickname);
+      dob.addEventListener('blur', validateDob);
+
+      // 초기 검증은 하지 않음 (빈칸이면 메시지 없음)
+    });
+  </script>
+</body>
+
+</html>

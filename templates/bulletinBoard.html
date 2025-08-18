@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시판 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="board-header-content">
+    <div class="page-title">게시판</div>
+    <nav class="board-nav">
+      <ul>
+        <li><a href="#" id="list-link">게시글 목록</a></li>
+        <li><a href="#" id="write-link">게시글 작성</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <main class="board-container">
+    <!-- 게시글 목록 -->
+    <div id="list-page">
+      <div class="posts-list" id="posts-container">
+      </div>
+    </div>
+
+    <!-- 게시글 작성 -->
+    <div id="write-page" style="display: none;">
+      <h1 class="page-title">게시글 작성</h1>
+      <div class="post-form-container">
+        <form id="post-form">
+          <div class="post-form-group">
+            <label for="post-title" class="post-form-label">제목</label>
+            <input type="text" id="post-title" class="post-form-control" required>
+          </div>
+          <div class="post-form-group">
+            <label for="post-author" class="post-form-label">작성자</label>
+            <input type="text" id="post-author" class="post-form-control" required>
+          </div>
+          <div class="post-form-group">
+            <label for="post-content" class="post-form-label">내용</label>
+            <textarea id="post-content" class="post-form-control" required></textarea>
+          </div>
+          <div class="post-form-actions">
+            <button type="button" id="cancel-post" class="board-btn board-btn-danger">취소</button>
+            <button type="submit" class="board-btn board-btn-primary">등록</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 게시글 상세 -->
+    <div id="detail-page" style="display: none;">
+      <div class="post-detail" id="post-detail">
+      </div>
+
+      <div class="comments-section">
+        <h2 class="comments-title">댓글</h2>
+        <div class="comment-form">
+          <form id="comment-form">
+            <textarea id="comment-content" placeholder="댓글 내용을 입력하세요." class="post-form-control" required></textarea>
+            <div class="post-form-actions">
+              <button type="submit" class="board-btn board-btn-primary">댓글 등록</button>
+            </div>
+          </form>
+          <div class="comment-list" id="comment-list">
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <script>
+    // 샘플 데이터
+    let posts = [
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 2,
+        title: "굿",
+        author: "아에이오우",
+        content: "테스트",
+        date: "2025-07-31",
+        comments: [
+          { id: 3, author: "12345", content: "123456789", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 3,
+        title: "굿굿",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 4,
+        title: "게시글",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 5,
+        title: "냉장고를 부탁해",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 6,
+        title: "레시피",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      },
+      {
+        id: 1,
+        title: "좋아요",
+        author: "가나다",
+        content: "가나다라마바사",
+        date: "2025-07-31",
+        comments: [
+          { id: 1, author: "라마바", content: "아자차카타파하", date: "2025-07-31" },
+          { id: 2, author: "ㄱㄴㄷ", content: "ㅈㄷㄱㄴㅇㄹㄴ", date: "2025-07-31" }
+        ]
+      }
+    ];
+
+    // DOM 요소
+    const listPage = document.getElementById('list-page');
+    const writePage = document.getElementById('write-page');
+    const detailPage = document.getElementById('detail-page');
+    const postsContainer = document.getElementById('posts-container');
+    const postForm = document.getElementById('post-form');
+    const postDetail = document.getElementById('post-detail');
+    const commentList = document.getElementById('comment-list');
+    const commentForm = document.getElementById('comment-form');
+    const listLink = document.getElementById('list-link');
+    const writeLink = document.getElementById('write-link');
+    const cancelPost = document.getElementById('cancel-post');
+
+    let currentPostId = null;
+
+    // 게시글 목록
+    function renderPosts() {
+      postsContainer.innerHTML = '';
+      posts.forEach(post => {
+        const postCard = document.createElement('div');
+        postCard.className = 'post-card';
+        postCard.setAttribute('data-id', post.id);
+
+        postCard.innerHTML = `
+        <div class="post-card-content">
+            <div class="post-card-title">${post.title}</div>
+            <div class="post-card-author">${post.author}</div>
+            <p class="post-card-excerpt">${post.content.substring(0, 100)}...</p>
+            <div class="post-card-date">Posted on ${post.date}</div>
+        </div>
+      `;
+        postsContainer.appendChild(postCard);
+
+        postCard.addEventListener('click', () => {
+          showPostDetail(post.id);
+        });
+      });
+    }
+
+    // 게시글 상세
+    function showPostDetail(postId) {
+      currentPostId = postId;
+      const post = posts.find(p => p.id === postId);
+
+      if (post) {
+        postDetail.innerHTML = `
+        <h1 class="post-title">${post.title}</h1>
+        <div class="post-meta">
+            <span>${post.author}</span>
+            <span>Posted on ${post.date}</span>
+        </div>
+        <div class="post-content">
+            <p>${post.content}</p>
+        </div>
+        <div class="post-actions">
+            <button id="edit-post" class="board-btn board-btn-primary">수정</button>
+            <button id="delete-post" class="board-btn board-btn-danger">삭제</button>
+        </div>
+      `;
+
+        renderComments(post.comments);
+
+        listPage.style.display = 'none';
+        writePage.style.display = 'none';
+        detailPage.style.display = 'block';
+
+        // 상세 페이지에서는 글쓰기 버튼 숨김
+        writeLink.style.display = 'none';
+
+        document.getElementById('edit-post').addEventListener('click', () => editPost(postId));
+        document.getElementById('delete-post').addEventListener('click', () => deletePost(postId));
+      }
+    }
+
+    // 댓글
+    function renderComments(comments) {
+      commentList.innerHTML = '';
+
+      if (comments.length === 0) {
+        commentList.innerHTML = '<p>댓글이 없습니다.</p>';
+        return;
+      }
+
+      comments.forEach(comment => {
+        const commentItem = document.createElement('div');
+        commentItem.className = 'comment-item';
+        commentItem.innerHTML = `
+        <div class="comment-author">${comment.author}</div>
+        <div class="comment-date">${comment.date}</div>
+        <div class="comment-content">${comment.content}</div>
+      `;
+        commentList.appendChild(commentItem);
+      });
+    }
+
+    // 게시글 수정
+    function editPost(postId) {
+      const post = posts.find(p => p.id === postId);
+
+      if (post) {
+        document.getElementById('post-title').value = post.title;
+        document.getElementById('post-author').value = post.author;
+        document.getElementById('post-content').value = post.content;
+
+        listPage.style.display = 'none';
+        writePage.style.display = 'block';
+        detailPage.style.display = 'none';
+
+        // 글쓰기 페이지에서도 버튼 숨김
+        writeLink.style.display = 'none';
+
+        postForm.onsubmit = (e) => {
+          e.preventDefault();
+          updatePost(postId);
+        };
+      }
+    }
+
+    // Update post
+    function updatePost(postId) {
+      const title = document.getElementById('post-title').value;
+      const author = document.getElementById('post-author').value;
+      const content = document.getElementById('post-content').value;
+
+      const postIndex = posts.findIndex(p => p.id === postId);
+
+      if (postIndex !== -1) {
+        posts[postIndex] = { ...posts[postIndex], title, author, content };
+        postForm.reset();
+        postForm.onsubmit = createPost;
+        showListPage();
+        renderPosts();
+      }
+    }
+
+    // 게시글 삭제
+    function deletePost(postId) {
+      if (confirm('게시글을 삭제하시겠습니까?')) {
+        posts = posts.filter(p => p.id !== postId);
+        showListPage();
+        renderPosts();
+      }
+    }
+
+    // create post
+    function createPost(e) {
+      e.preventDefault();
+      const title = document.getElementById('post-title').value;
+      const author = document.getElementById('post-author').value;
+      const content = document.getElementById('post-content').value;
+
+      const newPost = {
+        id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
+        title,
+        author,
+        content,
+        date: new Date().toISOString().split('T')[0],
+        comments: []
+      };
+
+      posts.unshift(newPost);
+      postForm.reset();
+      showListPage();
+      renderPosts();
+    }
+
+    // Add comment
+    function addComment(e) {
+      e.preventDefault();
+      const author = document.getElementById('comment-author').value;
+      const content = document.getElementById('comment-content').value;
+
+      const postIndex = posts.findIndex(p => p.id === currentPostId);
+
+      if (postIndex !== -1) {
+        const newComment = {
+          id: posts[postIndex].comments.length > 0
+            ? Math.max(...posts[postIndex].comments.map(c => c.id)) + 1
+            : 1,
+          author,
+          content,
+          date: new Date().toISOString().split('T')[0]
+        };
+        posts[postIndex].comments.push(newComment);
+        commentForm.reset();
+        renderComments(posts[postIndex].comments);
+      }
+    }
+
+    // Show list page
+    function showListPage() {
+      listPage.style.display = 'block';
+      writePage.style.display = 'none';
+      detailPage.style.display = 'none';
+
+      // 목록 페이지에서만 글쓰기 버튼 보이게
+      writeLink.style.display = 'inline-block';
+    }
+
+    // Show write page
+    function showWritePage() {
+      listPage.style.display = 'none';
+      writePage.style.display = 'block';
+      detailPage.style.display = 'none';
+
+      // 글쓰기 페이지에서도 버튼 숨김
+      writeLink.style.display = 'none';
+
+      postForm.reset();
+      postForm.onsubmit = createPost;
+    }
+
+    // Event listeners
+    listLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showListPage();
+    });
+
+    writeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showWritePage();
+    });
+
+    cancelPost.addEventListener('click', () => {
+      showListPage();
+    });
+
+    postForm.onsubmit = createPost;
+    commentForm.onsubmit = addComment;
+
+    renderPosts();
+  </script>
+</body>
+
+</html>

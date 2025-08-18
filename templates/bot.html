@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>챗봇 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% include 'header.html' %}
+  <main class="chatbox">
+    <div class="chat-header">
+      <div class="chat-header-content">
+        <img src="../static/images/blue-speechBubble.png" class="chat-header-icon">
+        <h2>챗봇과 대화하기</h2>
+      </div>
+      <p>무엇이든 물어보세요, 제가 도와드릴게요!</p>
+    </div>
+    <div class="chat-log" id="chat-log">
+      <!-- 말풍선 메시지 출력 영역 -->
+    </div>
+    <form class="user-input" id="chat-form">
+      <input type="text" id="user-input" placeholder="메시지를 입력하세요." required>
+      <button type="submit">전송</button>
+    </form>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+<script>
+const form = document.getElementById('chat-form');
+const input = document.getElementById('user-input');
+const log = document.getElementById('chat-log');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
+
+  /* 🔹 유저 메시지 래퍼 */
+  const userWrapper = document.createElement('div');
+  userWrapper.className = 'message-wrapper user';
+
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-message user fade-in-up';
+  userBubble.textContent = userMessage;
+
+  const userGif = document.createElement('img');
+  userGif.src = '../static/images/chef-hat.png';
+  userGif.className = 'outside-gif user-gif';
+
+  userWrapper.appendChild(userBubble);
+  userWrapper.appendChild(userGif);
+  log.appendChild(userWrapper);
+
+  input.value = '';
+
+  /* 🔹 봇 메시지 래퍼 */
+  const botWrapper = document.createElement('div');
+  botWrapper.className = 'message-wrapper bot';
+
+  const botGif = document.createElement('img');
+  botGif.src = '../static/images/logo.png';
+  botGif.className = 'outside-gif bot-gif';
+
+  const botBubble = document.createElement('div');
+  botBubble.className = 'chat-message bot fade-in-up';
+  botBubble.textContent = '...';
+
+  botWrapper.appendChild(botGif);
+  botWrapper.appendChild(botBubble);
+  log.appendChild(botWrapper);
+
+  log.scrollTop = log.scrollHeight;
+
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    const data = await response.json();
+    botBubble.textContent = data.response;
+    log.scrollTop = log.scrollHeight;
+  } catch (err) {
+    botBubble.textContent = '⚠️ 오류가 발생했어요.';
+    console.error('Chat error:', err);
+  }
+});
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% include 'header.html' %}
+
+  <main class="auth-container">
+    <h1>로그인</h1>
+
+    <!-- ✅ Flash 메시지 출력 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes" id="flash-messages">
+      {% for category, message in messages %}
+      <li class="flash {{ category }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <!-- 로그인 폼 -->
+    <form method="post" action="/signin" class="login-form">
+      <label for="userid">아이디</label>
+      <input type="text" name="userid" id="userid" class="form-input" required>
+
+      <label for="password">비밀번호</label>
+      <input type="password" name="password" id="password" class="form-input" required>
+
+      <button type="submit" class="form-button">로그인</button>
+    </form>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+</body>
+
+</html>
