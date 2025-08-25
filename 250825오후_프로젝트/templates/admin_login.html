@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html data-theme="business" lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 로그인 | 냉장고를 부탁해</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { plugins: [require('daisyui')] }
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css" rel="stylesheet" />
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-base-100">
+  <div class="card w-96 bg-base-200 shadow-xl p-6">
+    <h2 class="text-center text-2xl font-bold mb-4 text-white">관리자 로그인</h2>
+    {% if error %}
+    <p class="text-error mb-2 text-sm">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="/admin/login" class="flex flex-col gap-4">
+      <input type="text" name="admin_id" placeholder="ID" class="input input-bordered w-full" required>
+      <input type="password" name="password" placeholder="비밀번호" class="input input-bordered w-full" required>
+      <button type="submit" class="btn btn-primary w-full">로그인</button>
+    </form>
+  </div>
+</body>
+
+</html>

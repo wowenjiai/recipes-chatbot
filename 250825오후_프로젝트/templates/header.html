@@ -1,0 +1,35 @@
+<div class="loading-screen" id="loadingScreen">
+  <div class="loading-text">냉장고를 부탁해</div>
+  <img src="../static/images/avocado.png" class="pop-avocado">
+  <img src="../static/images/meat.png" class="pop-meat">
+  <img src="../static/images/frying-pan.png" class="pop-pan">
+  <img src="../static/images/fried-egg.png" class="pop-friedegg">
+  <img src="../static/images/fish.png" class="pop-fish">
+  <img src="../static/images/grapes.png" class="pop-grapes">
+  <img src="../static/images/banana.png" class="pop-banana">
+</div>
+
+<div class="custom-cursor" id="cursor"></div>
+
+<div class="floating-particles" id="particles"></div>
+
+<nav class="nav" id="nav">
+  <a href="{{ url_for('homepage') }}" class="logo">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="냉장고를 부탁해" class="logo-img" />
+    <div class="logo-text">냉장고를 부탁해</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('bot') }}">레시피 챗봇</a></li>
+    <li><a href="{{ url_for('recipes') }}">꿀팁 레시피</a></li>
+    <li><a href="{{ url_for('roulette') }}">오늘 뭐 먹지?</a></li>
+    <li><a href="{{ url_for('bulletinBoard') }}">게시판</a></li>
+
+    {% if session.get('user_id') %}
+    <li><a href="{{ url_for('mypage') }}">마이페이지</a></li>
+    <li><a href="/logout">로그아웃</a></li>
+    {% else %}
+    <li><a href="{{ url_for('signup') }}">회원가입</a></li>
+    <li><a href="{{ url_for('signin') }}">로그인</a></li>
+    {% endif %}
+  </ul>
+</nav>

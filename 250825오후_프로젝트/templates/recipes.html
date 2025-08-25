@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>꿀팁 레시피 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="../static/style.css" />
+</head>
+
+<body>
+
+  {% include 'header.html' %}
+
+  <div class="recipe-container">
+    <h1 class="recipe-title">꿀팁 레시피</h1>
+
+    <!-- 레시피 블로그 -->
+    <section class="recipe-content-section">
+      <h2 class="recipe-section-title">레시피 블로그</h2>
+      <div class="recipe-subcard-grid">
+        <div class="recipe-subcard">
+          <img src="../static/images/recipe-book.png" alt="만개의 레시피 이미지" class="recipe-subcard-img" />
+          <a href="https://www.10000recipe.com/index.html" class="recipe-subcard-title" target="_blank"
+            rel="noopener noreferrer">만개의 레시피</a>
+        </div>
+        <div class="recipe-subcard">
+          <img src="../static/images/cooking.png" alt="뚝딱 레시피 이미지" class="recipe-subcard-img" />
+          <a href="https://chef-choice.tistory.com/" class="recipe-subcard-title" target="_blank"
+            rel="noopener noreferrer">Chef Kim의<br>뚝딱 레시피</a>
+        </div>
+        <div class="recipe-subcard">
+          <img src="../static/images/fryingpan.png" alt="홀리아 푸드룸 이미지" class="recipe-subcard-img" />
+          <a href="https://foodroom.tistory.com/" class="recipe-subcard-title" target="_blank"
+            rel="noopener noreferrer">훌리아 푸드룸</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 레시피 유튜브 -->
+    <section class="recipe-content-section">
+      <h2 class="recipe-section-title">레시피 유튜브</h2>
+      <div class="recipe-subcard-grid">
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/mlUhstmzBl4"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@만개의레시피" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">만개의레시피<br>10K Recipe</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/jk-md9lKcvU"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@1mincook" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">1분요리 뚝딱이형</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/UJuYvKRhAK8"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@자취요리신simplecooking" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">자취요리신<br>simple cooking</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/1gK0aMC8kcQ"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@onemealaday767" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">하루한끼<br>one meal a day</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/ub5OMRzd3j4"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@leeyeonbok" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">이연복의 복주머니</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/5fBqIm38C5k"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@italyfabri" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">이태리 파브리<br>Italy Fabri</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/HqX21YVCd08"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@kitchencaden2335" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">정호영의 오늘도 요리<br>Kitchen Caden</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/v1_dATSi8rA"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@Chef_SungAnh" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">셰프 안성재<br>Chef Sung Anh</a>
+        </div>
+        <div class="recipe-subcard">
+          <div class="iframe-wrapper" style="position: relative; width: 100%; height: 200px;">
+            <iframe src="https://www.youtube.com/embed/FqBi2nLpeoE"
+              style="width: 100%; height: 100%; border-radius: 15px;"></iframe>
+            <div class="iframe-overlay"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: none;"></div>
+          </div>
+          <a href="https://www.youtube.com/@Samkim-s8c" target="_blank" class="recipe-subcard-title"
+            rel="noopener noreferrer">샘킴<br>Sam kim</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+</body>
+</html>

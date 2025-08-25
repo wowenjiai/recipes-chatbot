@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>챗봇 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  {% include 'header.html' %}
+  <main class="chatbox">
+    <div class="chat-header">
+      <div class="chat-header-content">
+        <img src="../static/images/blue-speechBubble.png" class="chat-header-icon">
+        <h2>챗봇과 대화하기</h2>
+      </div>
+      <p>무엇이든 물어보세요, 제가 도와드릴게요!</p>
+    </div>
+    <div class="chat-log" id="chat-log">
+      <!-- 말풍선 메시지 출력 영역 -->
+    </div>
+    <form class="user-input" id="chat-form">
+      <textarea id="user-input" placeholder="메시지를 입력하세요." required rows="1"></textarea>
+      <button type="submit">전송</button>
+    </form>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+<script>
+const form = document.getElementById('chat-form');
+const input = document.getElementById('user-input');
+const log = document.getElementById('chat-log');
+
+/* Shift+Enter 줄바꿈, Enter 전송 */
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault(); // Enter 단독이면 제출
+    form.dispatchEvent(new Event('submit'));
+  } // Shift+Enter는 그냥 줄바꿈 허용
+});
+
+// user-input (textarea)의 높이 자동 조절
+function autoResizeTextarea() {
+  input.style.height = 'auto'; // 먼저 높이를 'auto'로 설정
+
+  // min-height와 max-height 값을 CSS에서 가져옴
+  const computedStyle = getComputedStyle(input);
+  const minHeight = parseFloat(computedStyle.minHeight);
+  const maxHeight = parseFloat(computedStyle.maxHeight);
+
+  // 새로운 높이 계산
+  let newHeight = input.scrollHeight;
+
+  // 높이가 max-height를 초과하는지 확인
+  if (newHeight > maxHeight) {
+    input.style.height = maxHeight + 'px'; // 높이를 max-height로 고정
+    input.style.overflowY = 'auto'; // 스크롤바를 활성화
+  } else if (newHeight < minHeight) {
+    input.style.height = minHeight + 'px'; // 최소 높이보다 작으면 최소 높이로 고정
+    input.style.overflowY = 'hidden'; // 스크롤바를 숨김
+  }
+  else {
+    input.style.height = newHeight + 'px'; // 내용을 전부 담을 수 있는 높이로 설정
+    input.style.overflowY = 'hidden'; // 스크롤바를 숨깁니다.
+  }
+}
+
+// input(textarea)의 내용이 변경될 때마다 높이 자동 조절
+input.addEventListener('input', autoResizeTextarea);
+
+// 페이지 로드 시 높이 조절
+document.addEventListener('DOMContentLoaded', autoResizeTextarea);
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const userMessage = input.value.trim();
+  if (!userMessage) return;
+
+  /* 🔹 유저 메시지 래퍼 */
+  const userWrapper = document.createElement('div');
+  userWrapper.className = 'message-wrapper user';
+
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-message user fade-in-up';
+  userBubble.textContent = userMessage;
+
+  const userImg = document.createElement('img');
+  userImg.src = '../static/images/chef-hat.png';
+  userImg.className = 'outside-img user-img';
+
+  userWrapper.appendChild(userBubble);
+  userWrapper.appendChild(userImg);
+  log.appendChild(userWrapper);
+
+  input.value = '';
+
+  /* 🔹 봇 메시지 래퍼 */
+  const botWrapper = document.createElement('div');
+  botWrapper.className = 'message-wrapper bot';
+
+  const botImg = document.createElement('img');
+  botImg.src = '../static/images/logo.png';
+  botImg.className = 'outside-img bot-img';
+
+  const botBubble = document.createElement('div');
+  botBubble.className = 'chat-message bot fade-in-up';
+  botBubble.textContent = '...';
+
+  botWrapper.appendChild(botImg);
+  botWrapper.appendChild(botBubble);
+  log.appendChild(botWrapper);
+
+  log.scrollTop = log.scrollHeight;
+
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userMessage })
+    });
+
+    const data = await response.json();
+    botBubble.textContent = data.response;
+    log.scrollTop = log.scrollHeight;
+  } catch (err) {
+    botBubble.textContent = '⚠️ 오류가 발생했어요.';
+    console.error('Chat error:', err);
+  }
+});
+</script>
+
+</body>
+
+</html>

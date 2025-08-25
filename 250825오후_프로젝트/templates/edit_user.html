@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html data-theme="business" lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 수정 | 냉장고를 부탁해</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.1/dist/full.css" rel="stylesheet" />
+</head>
+
+<body class="bg-base-100 text-white p-6">
+  <div class="max-w-xl mx-auto bg-base-200 rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">[{{ member.userid }}] 회원 정보 수정</h2>
+    <form method="POST">
+
+      <!-- ID는 readonly로 고정 -->
+      <div class="form-control mb-4">
+        <label class="label">아이디</label>
+        <input type="text" name="userid" value="{{ member.userid }}" class="input input-bordered" readonly>
+      </div>
+
+      <!-- 비밀번호는 변경 시에만 입력 -->
+      <div class="form-control mb-4">
+        <label class="label">새 비밀번호 (변경 시 입력)</label>
+        <input type="password" name="password" class="input input-bordered" placeholder="비워두면 변경되지 않음">
+      </div>
+      <div class="form-control mb-4">
+        <label class="label">이름</label>
+        <input type="text" name="name" value="{{ member.name }}" class="input input-bordered" required>
+      </div>
+      <div class="form-control mb-4">
+        <label class="label">닉네임</label>
+        <input type="text" name="nickname" value="{{ member.nickname }}" class="input input-bordered" required>
+      </div>
+      <div class="form-control mb-4">
+        <label class="label">생년월일</label>
+        <input type="date" name="dob" value="{{ member.dob }}" class="input input-bordered">
+      </div>
+      <div class="form-control mb-6">
+        <label class="label">성별</label>
+        <select name="gender" class="select select-bordered" required>
+          <option value="남자" {% if member.gender=='남자' %}selected{% endif %}>남자</option>
+          <option value="여자" {% if member.gender=='여자' %}selected{% endif %}>여자</option>
+        </select>
+      </div>
+      <div class="flex justify-end gap-2">
+        <a href="/admin/dashboard" class="btn btn-outline">취소</a>
+        <button type="submit" class="btn btn-primary">저장</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>

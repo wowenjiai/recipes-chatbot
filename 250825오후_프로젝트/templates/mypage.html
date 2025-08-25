@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마이페이지 | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='mypage.css') }}">
+</head>
+
+<body>
+
+  {% include 'header.html' %}
+
+  <section class="the-height-400vh-section" data-w-id="df49fa37-3835-effb-c28f-9bd7be4b3ccc" id="sec01">
+    <div class="the-sticky-div">
+      <div class="night-sky-fixed-background" data-w-id="fc76b0fe-bba3-ae05-aa44-5c533e23a455"></div>
+      <div class="the-overflow-hidden-mask">
+        <div class="the-width-400vh-scrollable-div" data-w-id="9c0e3bb9-070a-4584-1466-9f7fca476da2">
+          <div class="the-content">
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="profile-content">
+                  <img src="{{ user.profile_pic or '/static/images/logo.png' }}" alt="Profile" class="profile-pic" />
+                  <h3 class="nickname">{{ user.nickname }}</h3>
+                  <p class="username">@{{ user.userid }}</p>
+                  <p class="bio">{{ user.bio or '여기 짧은 소개를 작성하세요.' }}</p>
+                  <button class="edit-btn">프로필 수정</button>
+                </div>
+              </div>
+            </div>
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="meal-tracker">
+                  <div class="calendar">
+                    <div class="calendar-header">
+                      <button class="prev-month">&lt;</button>
+                      <h4 class="month-year">월 년</h4>
+                      <button class="next-month">&gt;</button>
+                    </div>
+                    <div class="days-grid"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="notes-content">
+                  <h3 class="notes-title">메모</h3>
+                  <div class="notes-columns">
+                    <div class="notes-col">
+                      <h4>장보기!</h4>
+                      <hr><br>
+                      <ul class="notes-list" id="groceryList"></ul>
+                    </div>
+                    <div class="notes-col">
+                      <h4>레시피 도전해보기!</h4>
+                      <hr><br>
+                      <ul class="notes-list" id="recipesList"></ul>
+                    </div>
+                  </div>
+                  <button class="add-note-btn">+ 추가하기</button>
+                </div>
+              </div>
+            </div>
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="habit-tracker">
+                  <h3 class="tracker-title">습관 관리</h3>
+                  <ul class="habits-list" id="habitsList"></ul>
+                  <button class="add-habit-btn">+ 추가하기</button>
+                </div>
+              </div>
+            </div>
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="favorites-content">
+                  <h3 class="favorites-title">좋아요 모음</h3>
+                  <div class="favorites-list" id="favoritesList"></div>
+                  <button class="add-favorite-btn">+ 추가하기</button>
+                </div>
+              </div>
+            </div>
+            <div class="a-block">
+              <div class="gradient hovered-element">
+                <div class="profile-content">
+                  <div class="account-settings">
+                    <h4>계정 설정</h4>
+                    <button class="change-password-btn">
+                      비밀번호 바꾸기
+                    </button>
+                    <button class="delete-account-btn">계정 삭제하기</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="edit-modal" id="editModal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>프로필 수정</h2>
+      <form id="profileForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="profilePic">프로필 사진 URL:</label>
+          <input type="file" id="profilePic" accept="image/*" />
+        </div>
+        <div class="form-group">
+          <label for="nickname">닉네임:</label>
+          <input type="text" id="nickname" value="홍길동" />
+        </div>
+        <div class="form-group">
+          <label for="bio">소개:</label>
+          <textarea id="bio" placeholder="여기 짧은 소개를 작성하세요."></textarea>
+        </div>
+        <button type="submit" class="save-btn">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="account-modal" id="changePasswordModal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>비밀번호 바꾸기</h2>
+      <form id="passwordForm">
+        <div class="form-group">
+          <label for="currentPassword">현재 비밀번호:</label>
+          <input type="password" id="currentPassword" required />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">새로운 비밀번호:</label>
+          <input type="password" id="newPassword" required />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">비밀번호 확인:</label>
+          <input type="password" id="confirmPassword" required />
+        </div>
+        <button type="submit" class="save-btn">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="account-modal" id="deleteAccountModal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <h2>계정 삭재</h2>
+      <p>
+        이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
+      </p>
+      <form id="deleteAccountForm">
+        <div class="form-group">
+          <label for="deleteUser">사용자아이디를 입력하여 확인하세요:</label>
+          <input type="text" id="deleteUser" required />
+          <label for="deletePassword">비밀번호를 입력하여 확인하세요:</label>
+          <input type="password" id="deletePassword" required />
+        </div>
+        <button type="submit" class="delete-btn">계정 삭재하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="note-modal" id="noteModal">
+    <div class="note-modal-content">
+      <span class="close-note-btn">&times;</span>
+      <h2>메모 추가/수정하기</h2>
+      <form id="noteForm">
+        <div class="form-group">
+          <label for="noteType">리스트:</label>
+          <select id="noteType" required>
+            <option value="grocery">장보기</option>
+            <option value="recipe">레시피 도전해보기</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="noteText">재료/레시피명:</label>
+          <input type="text" id="noteText" placeholder="입력은 쉼표로 구분하세요" required />
+        </div>
+        <input type="hidden" id="noteId" />
+        <button type="submit" class="save-btn">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="favorite-modal" id="favoriteModal">
+    <div class="favorite-modal-content">
+      <span class="close-favorite-btn">&times;</span>
+      <h2>좋아요 레시피 추가/수정하기</h2>
+      <form id="favoriteForm">
+        <div class="form-group">
+          <label for="favoriteName">레시피명:</label>
+          <input type="text" id="favoriteName" placeholder="레시피명을 입력하세요" required />
+        </div>
+        <div class="form-group">
+          <label for="favoriteIngredients">재료:</label>
+          <textarea id="favoriteIngredients" rows="3" placeholder="재료 목록 (각 줄에 하나씩 밉력하세요)" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="favoriteRecipe">조리순서:</label>
+          <textarea id="favoriteRecipe" rows="4" placeholder="조리순서를 입력하세요"></textarea>
+        </div>
+        <input type="hidden" id="favoriteId" />
+        <button type="submit" class="save-btn">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="habit-modal" id="habitModal">
+    <div class="habit-modal-content">
+      <span class="close-habit-btn">&times;</span>
+      <h2>습관 추가/편집하기</h2>
+      <form id="habitForm">
+        <div class="form-group">
+          <label for="habitName">습관:</label>
+          <input type="text" id="habitName" placeholder="관리하고싶은 습관을 입력하세요" required />
+        </div>
+        <input type="hidden" id="habitId" />
+        <button type="submit" class="save-btn">저장하기</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="meal-modal" id="mealModal">
+    <div class="meal-modal-flip-container">
+      <div class="meal-modal-flipper">
+        <!-- FRONT SIDE -->
+        <div class="meal-modal-content front">
+          <span class="close-meal-btn" id="closeMealBtn">×</span>
+          <h2>기록하기</h2>
+          <form id="mealForm" data-date="">
+            <div class="form-group">
+              <label for="dishName">오늘의 매뉴:</label>
+              <input type="text" id="dishName" placeholder="음식명을 입력하세요" required />
+            </div>
+            <div class="form-group">
+              <label for="ingredients">재료:</label>
+              <textarea id="ingredients" rows="2" placeholder="재료를 입력 (쉼표로 구분하세요)" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="recipe">조리순서:</label>
+              <textarea id="recipe" rows="3" placeholder="조리순서를 입력하세요"></textarea>
+            </div>
+            <button type="button" class="delete-btn2" id="deleteMealBtn">삭제하기</button>
+            <button type="submit" class="save-btn2">저장하기</button>
+            <button type="button" class="flip-btn">댓글/평가하기 →</button>
+        </div>
+
+        <!-- BACK SIDE -->
+        <div class="meal-modal-content back">
+          <h2>후기 남기기</h2>
+          <div class="form-group">
+            <label for="comment">코멘트:</label>
+            <textarea id="comment" rows="10" placeholder="느낀 점을 적어주세요"></textarea>
+          </div>
+          <div class="form-group">
+            <label>평점:</label>
+            <div class="star-rating">
+              <span data-value="1">★</span>
+              <span data-value="2">★</span>
+              <span data-value="3">★</span>
+              <span data-value="4">★</span>
+              <span data-value="5">★</span>
+            </div>
+          </div>
+          <button type="submit" class="save-btn2">저장하기</button>
+          <button type="button" class="flip-btn">← 돌아가기</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      ////////    SCREEN RELATED     ////////
+
+      const scrollableDiv = document.querySelector(
+        ".the-width-400vh-scrollable-div"
+      );
+      const parentSection = document.querySelector(".the-height-400vh-section");
+      const stickyDiv = document.querySelector(".the-sticky-div");
+
+      // Set the height of the vertical section dynamically
+      function updateScrollHeight() {
+        const scrollWidth = scrollableDiv.scrollWidth;
+        const viewportWidth = window.innerWidth;
+        const scrollDistance = scrollWidth - viewportWidth;
+
+        // This sets the vertical scroll height needed to move the scrollableDiv completely left
+        parentSection.style.height = scrollDistance + window.innerHeight + "px";
+      }
+
+      // Call once on load, and again on resize
+      updateScrollHeight();
+      window.addEventListener("resize", updateScrollHeight);
+
+      // Horizontal scroll logic
+      window.addEventListener("scroll", () => {
+        const rect = parentSection.getBoundingClientRect();
+        const scrolled = -rect.top;
+
+        if (rect.top <= 0 && rect.bottom >= window.innerHeight) {
+          scrollableDiv.style.transform = `translateX(${-scrolled}px)`;
+        }
+      });
+
+      // Parallax effect on stars
+      const stars = document.querySelector(".night-sky-fixed-background");
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        stars.style.transform = `translateY(${scrolled * 0.5}px)`;
+      });
+
+
+
+
+
+
+      ////////    PROFILE EDIT MODAL FUNCTIONALITY    ////////
+
+      const modal = document.getElementById("editModal");
+      const editBtn = document.querySelector(".edit-btn");
+      const closeBtn = document.querySelector(".close-btn");
+      const profileForm = document.getElementById("profileForm");
+
+      // Open modal and pre-fill form
+      editBtn.addEventListener("click", () => {
+        modal.style.display = "block";
+
+        // Pre-fill with existing data
+        document.getElementById("nickname").value = document.querySelector(".nickname").textContent;
+        document.getElementById("username").value = document.querySelector(".username").textContent.replace("@", "");
+        document.getElementById("bio").value = document.querySelector(".bio").textContent;
+      });
+
+      // Close modal (X button)
+      closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // Handle form submission
+      profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nickname = document.getElementById("nickname").value.trim();
+        const bio = document.getElementById("bio").value.trim();
+        const fileInput = document.getElementById("profilePic");
+
+        // Update profile picture (preview only, not saved to server)
+        const formData = new FormData();
+        formData.append("nickname", nickname);
+        formData.append("bio", bio);
+        if (fileInput.files[0]) {
+          formData.append("profilePic", fileInput.files[0]);
+        }
+
+        try {
+          const res = await fetch("/update_profile", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await res.json();
+          if (res.ok) {
+            alert("✅ 프로필이 저장되었습니다!");
+
+            if (result.profile_pic) {
+              document.querySelector(".profile-pic").src = result.profile_pic;
+            }
+            document.querySelector(".nickname").textContent = nickname;
+            document.querySelector(".bio").textContent = bio;
+
+          } else {
+            alert("❌ 오류 발생: " + result.error);
+          }
+        } catch (err) {
+          alert("❌ 요청 실패: " + err.message);
+        }
+
+        modal.style.display = "none";
+        fileInput.value = "";
+      });
+
+
+
+
+
+
+
+
+
+      ////////    ACCOUNT SETTINGS MODAL    ////////
+
+      const changePasswordModal = document.getElementById(
+        "changePasswordModal"
+      );
+      const deleteAccountModal = document.getElementById("deleteAccountModal");
+      const changePasswordBtn = document.querySelector(".change-password-btn");
+      const deleteAccountBtn = document.querySelector(".delete-account-btn");
+      const passwordForm = document.getElementById("passwordForm");
+      const deleteAccountForm = document.getElementById("deleteAccountForm");
+
+      changePasswordBtn.addEventListener("click", () => {
+        changePasswordModal.style.display = "block";
+      });
+
+      deleteAccountBtn.addEventListener("click", () => {
+        deleteAccountModal.style.display = "block";
+      });
+
+      // Close all modals when clicking their close buttons
+      document.querySelectorAll(".close-btn").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const modal = this.closest(".edit-modal, .account-modal");
+          modal.style.display = "none";
+          if (modal.id === "changePasswordModal") {
+            document.getElementById("passwordForm").reset();
+          }
+        });
+      });
+
+      // Close modals when clicking outside
+      window.addEventListener("click", (e) => {
+        if (
+          e.target.classList.contains("edit-modal") ||
+          e.target.classList.contains("account-modal")
+        ) {
+          if (e.target.id === "changePasswordModal") {
+            document.getElementById("passwordForm").reset();
+          }
+          e.target.style.display = "none";
+        }
+      });
+
+      // Password form submission
+      passwordForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const currentPassword = document.getElementById("currentPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (newPassword !== confirmPassword) {
+          alert("❌ 비밀번호가 일치하지 않습니다.", "error");
+          return;
+        }
+
+        try {
+          const response = await fetch("/change_password", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              currentPassword, newPassword
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("✅ 비밀번호가 변경되었습니다!");
+            changePasswordModal.style.display = "none";
+            passwordForm.reset();
+          } else {
+            alert("❌ " + result.error, "error");
+          }
+        } catch (err) {
+          alert("❌ 요청 실패: " + err.message, "error");
+        }
+      });
+
+      // deleting account 
+      deleteAccountForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const userid = document.getElementById("deleteUser").value;
+        const password = document.getElementById("deletePassword").value;
+
+        try {
+          const response = await fetch("/delete_account", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userid, password }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert("✅ 계정이 성공적으로 삭제되었습니다.");
+            deleteAccountModal.style.display = "none";
+            deleteAccountForm.reset();
+            window.location.href = "/";
+          } else {
+            alert("❌ " + result.error);
+          }
+        } catch (err) {
+          alert("❌ 요청 실패: " + err.message);
+        }
+      });
+
+
+
+
+
+
+      ////////    CALENDAR FUNCTIONALITY    ////////
+
+      const calendar = document.querySelector(".calendar");
+      const daysGrid = document.querySelector(".days-grid");
+      const monthYear = document.querySelector(".month-year");
+      const prevMonthBtn = document.querySelector(".prev-month");
+      const nextMonthBtn = document.querySelector(".next-month");
+      const mealModal = document.getElementById("mealModal");
+      const closeMealBtn = document.querySelector(".close-meal-btn");
+      const mealForm = document.getElementById("mealForm");
+      const currentUserId = "{{ session['user_id'] }}";
+
+      let currentDate = new Date();
+      let meals = {};
+
+      async function fetchMealsForMonth(year, month) {
+        try {
+          const res = await fetch(`/api/meals?userid=${currentUserId}&year=${year}&month=${month + 1}`);
+          if (res.ok) {
+            meals = await res.json(); // Example response: { "2025-08-05": {dish_name: "...", ...}, ... }
+          } else {
+            meals = {};
+          }
+        } catch (e) {
+          console.error("Error loading meals:", e);
+          meals = {};
+        }
+      }
+
+      // Render calendar
+      async function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        await fetchMealsForMonth(year, month);
+
+        // Set month and year in header
+        monthYear.textContent = `${new Intl.DateTimeFormat("kr", {
+          month: "long",
+        }).format(currentDate)} ${year}`;
+
+        // Clear previous days
+        daysGrid.innerHTML = "";
+
+        // Add day headers
+        const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+        dayNames.forEach((day) => {
+          const dayHeader = document.createElement("div");
+          dayHeader.className = "day-header";
+          dayHeader.textContent = day;
+          daysGrid.appendChild(dayHeader);
+        });
+
+        // Get first day of month and total days
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Add empty cells for days before first day
+        for (let i = 0; i < firstDay; i++) {
+          const emptyDay = document.createElement("div");
+          emptyDay.className = "day empty";
+          daysGrid.appendChild(emptyDay);
+        }
+
+        // Add days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+          const date = new Date(year, month, day);
+          const dateStr = date.toISOString().split("T")[0];
+
+          const dayElement = document.createElement("div");
+          dayElement.className = "day";
+          dayElement.textContent = day;
+          dayElement.dataset.date = dateStr;
+
+          // Highlight if has meal
+          if (meals[dateStr]) {
+            dayElement.classList.add("has-meal");
+          }
+
+          dayElement.addEventListener("click", () => openMealModal(dateStr));
+          daysGrid.appendChild(dayElement);
+        }
+      }
+
+      const flipper = document.querySelector(".meal-modal-flipper");
+
+      // Open meal modal with selected date
+      async function openMealModal(dateStr) {
+        mealForm.dataset.date = dateStr;
+        flipper.classList.remove("flipped");
+
+        try {
+          const res = await fetch(`/api/meal?userid=${currentUserId}&date=${dateStr}`);
+          if (res.ok) {
+            const meal = await res.json();
+
+            document.getElementById("dishName").value = meal.dish_name || "";
+            document.getElementById("ingredients").value = meal.ingredients || "";
+            document.getElementById("recipe").value = meal.recipe || "";
+            document.getElementById("comment").value = meal.comment || "";
+
+            const savedRating = parseInt(meal.rating);
+            document.querySelectorAll(".star-rating span").forEach((star) => {
+              const value = parseInt(star.dataset.value);
+              star.classList.toggle("selected", value <= savedRating);
+            });
+          } else {
+            // No meal found – clear form
+            document.getElementById("dishName").value = "";
+            document.getElementById("ingredients").value = "";
+            document.getElementById("recipe").value = "";
+            document.getElementById("comment").value = "";
+            document.querySelectorAll(".star-rating span").forEach((star) => star.classList.remove("selected"));
+          }
+
+          mealModal.style.display = "block";
+          document.getElementById("dishName").focus();
+        } catch (e) {
+          console.error("Error loading meal data:", e);
+        }
+      }
+
+
+      // Close meal modal
+      closeMealBtn.addEventListener("click", () => {
+        mealModal.style.display = "none";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (e) => {
+        if (e.target === mealModal) {
+          mealModal.style.display = "none";
+        }
+      });
+      // Flip to back side
+      mealModal.querySelectorAll(".flip-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          flipper.classList.toggle("flipped");
+        });
+      });
+
+      // Star rating select
+      const starSpans = document.querySelectorAll(".star-rating span");
+      starSpans.forEach((star) => {
+        star.addEventListener("click", () => {
+          const selectedValue = parseInt(star.dataset.value);
+          starSpans.forEach((s) => {
+            const value = parseInt(s.dataset.value);
+            if (value <= selectedValue) {
+              s.classList.add("selected");
+            } else {
+              s.classList.remove("selected");
+            }
+          });
+        });
+      });
+
+      // Delete meal
+      document.getElementById('deleteMealBtn').addEventListener('click', async () => {
+        const dateStr = mealForm.dataset.date;
+
+        if (!confirm("정말 이 날의 기록을 삭제하시겠습니까?")) return;
+
+        try {
+          const res = await fetch(`/api/delete_meal`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userid: currentUserId,
+              meal_date: dateStr
+            })
+          });
+
+          if (res.ok) {
+            alert("삭제되었습니다.");
+            renderCalendar();
+            mealModal.style.display = "none";
+          } else {
+            alert("삭제 실패");
+          }
+        } catch (e) {
+          console.error("Error deleting meal:", e);
+          alert("오류 발생");
+        }
+      });
+
+
+      // save meal
+      mealForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const dateStr = mealForm.dataset.date;
+        const dishName = document.getElementById("dishName").value.trim();
+        const ingredients = document.getElementById("ingredients").value.trim();
+        const recipe = document.getElementById("recipe").value.trim();
+        const comment = document.getElementById("comment").value.trim();
+        const selectedStars = document.querySelectorAll(".star-rating span.selected");
+        const rating = selectedStars.length > 0 ? selectedStars.length : null;
+
+        if (!dishName) {
+          alert("음식명을 입력해주세요.");
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/save_meal", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              userid: currentUserId,  // You must set this from the session or frontend
+              meal_date: dateStr,
+              dish_name: dishName,
+              ingredients,
+              recipe,
+              comment,
+              rating
+            })
+          });
+
+          if (response.ok) {
+            alert("저장되었습니다.");
+            renderCalendar(); // Optionally re-fetch meal days from server
+            mealModal.style.display = "none";
+          } else {
+            const data = await response.json();
+            alert("저장 실패: " + (data.message || "서버 오류"));
+          }
+        } catch (err) {
+          console.error(err);
+          alert("저장 중 오류가 발생했습니다.");
+        }
+      });
+
+
+
+      // Change month
+      prevMonthBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      nextMonthBtn.addEventListener("click", () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
+
+      renderCalendar();
+
+
+
+
+
+
+      ////////    PERSONAL NOTES FUNCTIONALITY    ////////
+
+      const noteModal = document.getElementById("noteModal");
+      const noteForm = document.getElementById("noteForm");
+      const addNoteBtn = document.querySelector(".add-note-btn");
+      const closeNoteBtn = document.querySelector(".close-note-btn");
+      const groceryList = document.getElementById("groceryList");
+      const recipesList = document.getElementById("recipesList");
+
+      // Notes will be loaded from backend
+      let notes = { grocery: [], recipe: [] };
+
+      // Fetch notes from backend
+      async function fetchNotes() {
+        try {
+          const res = await fetch("/api/notes");
+          const data = await res.json();
+
+          // Reset the notes object
+          notes = {
+            grocery: [],
+            recipe: []
+          };
+
+          data.forEach(note => {
+            if (note.type === "grocery") notes.grocery.push(note);
+            else if (note.type === "recipe") notes.recipe.push(note);
+          });
+
+          renderNotes();  // Render right after fetch
+        } catch (err) {
+          console.error("Failed to fetch notes:", err);
+          alert("메모를 불러오는 중 오류가 발생했습니다.");
+        }
+      }
+
+
+      let currentNoteId = null;
+
+      // Open note modal (for add/edit)
+      function openNoteModal(note = null) {
+        if (note) {
+          document.getElementById("noteType").value = note.type;
+          document.getElementById("noteText").value = note.text;
+          document.getElementById("noteId").value = note.id;
+        } else {
+          document.getElementById("noteType").value = "grocery";
+          document.getElementById("noteText").value = "";
+          document.getElementById("noteId").value = "";
+        }
+        noteModal.style.display = "block";
+      }
+
+      // Close note modal
+      closeNoteBtn.addEventListener("click", () => {
+        noteModal.style.display = "none";
+      });
+
+      // Close modal when clicking outside
+      window.addEventListener("click", (e) => {
+        if (e.target === noteModal) {
+          noteModal.style.display = "none";
+        }
+      });
+
+      // Add new note
+      addNoteBtn.addEventListener("click", () => {
+        openNoteModal();
+      });
+
+      // Save (create or update) note
+      noteForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const type = document.getElementById("noteType").value;
+        const textInput = document.getElementById("noteText").value.trim();
+        const noteId = document.getElementById("noteId").value;
+
+        if (!textInput) return;
+
+        try {
+          if (noteId) {
+            // Update existing note
+            const res = await fetch(`/api/notes/${noteId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text: textInput })
+            });
+            if (!res.ok) throw new Error("Update failed");
+          } else {
+            // Handle multiple new notes
+            const texts = textInput
+              .split(",")
+              .map((item) => item.trim())
+              .filter((item) => item.length > 0);
+
+            const res = await fetch("/api/notes", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ type, texts })
+            });
+            if (!res.ok) throw new Error("Create failed");
+          }
+
+          await fetchNotes();
+          noteModal.style.display = "none";
+          noteForm.reset();
+        } catch (err) {
+          console.error(err);
+          alert("저장 중 오류가 발생했습니다.");
+        }
+      });
+
+      // Render notes to DOM
+      function renderNotes() {
+        groceryList.innerHTML = "";
+        recipesList.innerHTML = "";
+
+        notes.grocery.forEach((note) => {
+          const li = createNoteElement(note);
+          groceryList.appendChild(li);
+        });
+
+        notes.recipe.forEach((note) => {
+          const li = createNoteElement(note);
+          recipesList.appendChild(li);
+        });
+      }
+
+      // Create note <li> element
+      function createNoteElement(note) {
+        const li = document.createElement("li");
+        if (note.completed) li.classList.add("completed");
+
+        li.innerHTML = `
+            <span>${note.text}</span>
+            <div class="note-actions">
+                <button class="edit-note" data-id="${note.id}">✏️</button>
+                <button class="toggle-note" data-id="${note.id}">
+                  ${note.completed ? "↩️" : "✓"}
+                </button>
+                <button class="delete-note" data-id="${note.id}">🗑️</button>
+            </div>
+          `;
+        return li;
+      }
+
+      // Handle edit, toggle, and delete actions
+      document.addEventListener("click", async (e) => {
+        const target = e.target;
+        const noteId = target.dataset.id;
+
+        if (target.classList.contains("edit-note")) {
+          const note = [...notes.grocery, ...notes.recipe].find(n => n.id === Number(noteId));
+          if (note) openNoteModal(note);
+        }
+
+        if (e.target.classList.contains("toggle-note")) {
+          const noteId = e.target.dataset.id;
+
+          fetch(`/api/notes/${noteId}/toggle`, {
+            method: "PATCH",
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error("Toggle failed");
+              return fetchNotes();  // Refresh from backend
+            })
+            .catch((err) => {
+              console.error("Toggle error:", err);
+            });
+        }
+
+
+        if (target.classList.contains("delete-note")) {
+          try {
+            const res = await fetch(`/api/notes/${noteId}`, {
+              method: "DELETE"
+            });
+            if (!res.ok) throw new Error("Delete failed");
+            await fetchNotes();
+          } catch (err) {
+            console.error(err);
+            alert("삭제 중 오류가 발생했습니다.");
+          }
+        }
+      });
+
+      fetchNotes();
+
+
+
+
+
+
+
+
+      ////////    HABIT TRACKER FUNCTIONALITY   ////////
+
+      const habitModal = document.getElementById("habitModal");
+      const habitForm = document.getElementById("habitForm");
+      const addHabitBtn = document.querySelector(".add-habit-btn");
+      const closeHabitBtn = document.querySelector(".close-habit-btn");
+      const habitsList = document.getElementById("habitsList");
+
+      let habits = [];
+      let currentHabitId = null;
+
+      // ----------- API CALLS -----------
+
+      // Load habits from DB
+      async function fetchHabits() {
+        const res = await fetch("/api/habits");
+        if (res.ok) {
+          habits = await res.json();
+          renderHabits();
+        } else {
+          console.error("로드에 실패했습니다.");
+        }
+      }
+
+      // Save habit (create or update)
+      async function saveHabit(habit) {
+        const method = habit.habitid ? "PUT" : "POST";
+        const url = habit.habitid ? `/api/habits/${habit.habitid}` : `/api/habits`;
+
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(habit),
+        });
+        if (res.ok) {
+          await fetchHabits();
+        } else {
+          console.error("저장에 실패했습니다.");
+        }
+      }
+
+      // Delete habit
+      async function deleteHabit(habitid) {
+        const res = await fetch(`/api/habits/${habitid}`, { method: "DELETE" });
+        if (res.ok) {
+          await fetchHabits();
+        } else {
+          console.error("삭제에 실패힜습니다");
+        }
+      }
+
+      // Toggle completion
+      async function toggleHabit(habitid, completed) {
+        const res = await fetch(`/api/habits/${habitid}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed }),
+        });
+        if (res.ok) {
+          await fetchHabits();
+        } else {
+          console.error("Failed to toggle habit");
+        }
+      }
+
+      // ----------- MODAL HANDLING -----------
+      function openHabitModal(habit = null) {
+        if (habit) {
+          document.getElementById("habitName").value = habit.name;
+          document.getElementById("habitId").value = habit.habitid;
+        } else {
+          document.getElementById("habitName").value = "";
+          document.getElementById("habitId").value = "";
+        }
+        habitModal.style.display = "block";
+      }
+
+      closeHabitBtn.addEventListener("click", () => {
+        habitModal.style.display = "none";
+      });
+
+      window.addEventListener("click", (e) => {
+        if (e.target === habitModal) {
+          habitModal.style.display = "none";
+        }
+      });
+
+      addHabitBtn.addEventListener("click", () => {
+        openHabitModal();
+      });
+
+      // ----------- FORM SUBMIT -----------
+      habitForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("habitName").value.trim();
+        const habitid = document.getElementById("habitId").value;
+
+        if (!name) return;
+
+        const habitData = {
+          habitid: habitid || null,
+          name,
+          completed: false
+        };
+
+        await saveHabit(habitData);
+
+        habitModal.style.display = "none";
+        habitForm.reset();
+      });
+
+      // ----------- RENDER LIST -----------
+      function renderHabits() {
+        habitsList.innerHTML = "";
+
+        habits.forEach((habit) => {
+          const li = document.createElement("li");
+          if (habit.completed) li.classList.add("completed");
+
+          li.innerHTML = `
+              <span>${habit.name}</span>
+              <div class="habit-actions">
+                  <button class="edit-habit" data-id="${habit.habitid}">✏️</button>
+                  <button class="toggle-habit" data-id="${habit.habitid}">
+                      ${habit.completed ? "↩️" : "✓"}
+                  </button>
+                  <button class="delete-habit" data-id="${habit.habitid}">🗑️</button>
+              </div>
+            `;
+
+          habitsList.appendChild(li);
+        });
+      }
+
+      // ----------- ACTION HANDLERS -----------
+      document.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("edit-habit")) {
+          const habit = habits.find((h) => h.habitid == e.target.dataset.id);
+          if (habit) openHabitModal(habit);
+        }
+
+        if (e.target.classList.contains("toggle-habit")) {
+          const habit = habits.find((h) => h.habitid == e.target.dataset.id);
+          if (habit) {
+            await toggleHabit(habit.habitid, !habit.completed);
+          }
+        }
+
+        if (e.target.classList.contains("delete-habit")) {
+          await deleteHabit(e.target.dataset.id);
+        }
+      });
+
+      // ----------- INIT -----------
+      fetchHabits();
+
+
+
+
+
+
+
+
+      ////////    FAVORITES FUNCTIONALITY   ////////
+
+      const favoriteModal = document.getElementById("favoriteModal");
+      const favoriteForm = document.getElementById("favoriteForm");
+      const addFavoriteBtn = document.querySelector(".add-favorite-btn");
+      const closeFavoriteBtn = document.querySelector(".close-favorite-btn");
+      const favoritesList = document.getElementById("favoritesList");
+
+      let favorites = [];
+      let editingFavoriteId = null;
+
+      function openFavoriteModal(favorite = null) {
+        if (favorite) {
+          document.getElementById("favoriteName").value = favorite.name || "";
+          document.getElementById("favoriteIngredients").value =
+            (favorite.ingredients || []).join("\n");
+          document.getElementById("favoriteRecipe").value = favorite.recipe || "";
+          editingFavoriteId = favorite.id;
+        } else {
+          favoriteForm.reset();
+          editingFavoriteId = null;
+        }
+        favoriteModal.style.display = "block";
+      }
+
+      closeFavoriteBtn.addEventListener("click", () => {
+        favoriteModal.style.display = "none";
+      });
+
+      window.addEventListener("click", (e) => {
+        if (e.target === favoriteModal) {
+          favoriteModal.style.display = "none";
+        }
+      });
+
+      addFavoriteBtn.addEventListener("click", () => {
+        openFavoriteModal();
+      });
+
+      async function fetchFavorites() {
+        const res = await fetch("/api/favorites");
+        if (res.ok) {
+          favorites = await res.json();
+          renderFavorites();
+        }
+      }
+
+      favoriteForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById("favoriteName").value.trim();
+        const ingredients = document
+          .getElementById("favoriteIngredients")
+          .value.trim()
+          .split("\n")
+          .filter(line => line.trim() !== "");
+        const recipe = document.getElementById("favoriteRecipe").value.trim();
+
+        if (!name || ingredients.length === 0) return;
+
+        let res;
+        if (editingFavoriteId) {
+          // Update favorite
+          res = await fetch(`/api/favorites/${editingFavoriteId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, ingredients, recipe }),
+          });
+        } else {
+          // Add new favorite
+          res = await fetch("/api/favorites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, ingredients, recipe }),
+          });
+        }
+
+        if (res.ok) {
+          favoriteModal.style.display = "none";
+          favoriteForm.reset();
+          fetchFavorites(); // Reload the list
+        } else {
+          const err = await res.json();
+          alert(err.error || "저장에 실패했습니다.");
+        }
+      });
+
+      function renderFavorites() {
+        favoritesList.innerHTML = "";
+
+        favorites.forEach((favorite) => {
+          const div = document.createElement("div");
+          div.className = "favorite-item";
+
+          div.innerHTML = `
+              <div class="favorite-name">${favorite.name}</div>
+              <div class="favorite-ingredients"><strong>재료:</strong> ${favorite.ingredients.join(
+            ", "
+          )}</div>
+              <div class="favorite-recipe"><strong>조리순서:</strong> ${favorite.recipe
+            }</div>
+              <div class="favorite-actions">
+                  <button class="edit-favorite" data-id="${favorite.id}">✏️</button>
+                  <button class="delete-favorite" data-id="${favorite.id}">🗑️</button>
+              </div>
+            `;
+
+          div.addEventListener("click", (e) => {
+            if (
+              !e.target.classList.contains("edit-favorite") &&
+              !e.target.classList.contains("delete-favorite")
+            ) {
+              div.classList.toggle("expanded");
+            }
+          });
+
+          favoritesList.appendChild(div);
+        });
+      }
+
+      favoritesList.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("edit-favorite")) {
+          const favoriteId = e.target.dataset.id;
+          const favorite = favorites.find((f) => f.id == favoriteId);
+          if (favorite) openFavoriteModal(favorite);
+        }
+
+        if (e.target.classList.contains("delete-favorite")) {
+          if (!confirm("이 항목을 삭제하시겠습니까?")) return;
+          const favoriteId = e.target.dataset.id;
+          const res = await fetch(`/api/favorites/${favoriteId}`, { method: "DELETE" });
+          if (res.ok) {
+            fetchFavorites();
+          } else {
+            alert("삭제에 실패했습니다");
+          }
+        }
+      });
+
+      // Initial load
+      fetchFavorites();
+
+
+    });
+  </script>
+</body>
+
+</html>

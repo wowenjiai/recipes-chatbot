@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>냉장고를 부탁해</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    {% include 'header.html' %}
+
+    <main>
+        <section class="home" id="home">
+            <div class="home-bg" style="background: #f0ebe6"></div>
+            <div class="home-content">
+                <h1 class="home-title">냉장고 속 재료로 <br> 만드는 맛있는 한 끼</h1>
+                <div class="bot-container">
+                    <a href="{{ url_for('bot') }}" class="bot-button">
+                        <img src="/static/images/logo.png" alt="냉장고를 부탁해" class="bot-button" />
+                        <div class="bot-speech-wrapper">
+                            <div class="bot-speech">
+                                <span class="bot-speech-text">레시피 <br> 추천해드려요 !</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="card-slider-section" id="work">
+            <h1 class="card-slider-title">
+                <span class="highlight-wrap">
+                    요리의 즐거움
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 201 86" fill="none" class="circle-anim">
+                        <path
+                            d="M94.2928 1.00027C123.974 0.963816 154.146 4.60865 181.273 16.5546C189.974 20.3907 199.369 26.6143 199.971 36.0452C200.401 42.8702 195.929 49.03 190.946 53.75C180.208 63.9191 166.386 70.3066 152.306 74.9538C125.258 83.8745 96.2711 86.9179 67.9394 83.8289C50.4851 81.9245 33.011 77.6054 17.9651 68.6209C9.40333 63.509 1.07316 55.618 1.00038 45.7041C0.960683 39.7721 4.01088 34.1226 8.27852 29.9767C12.5461 25.8307 17.9452 23.015 23.4369 20.6915C48.2553 10.2126 75.8527 8.8093 102.795 7.54272"
+                            stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                을 한 곳에! <br>
+                룰렛부터 <span class="underline-text">레시피 추천, 공유
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 403 17" fill="none"
+                        class="underline-svg" aria-hidden="true">
+                        <path
+                            d="M1 16C25.8389 14.2222 50.643 12.2137 75.2387 9.47009C107.364 5.99145 144.414 1.26496 174.898 1C178.242 1.35897 168.254 2.8718 166.786 3.22223C163.842 3.76924 160.464 4.41881 157.146 5.11966C152.23 6.22223 134.982 9.64957 144.171 12.1282C152.23 13.8974 167.551 13.4701 178.572 13.094C200.11 12.2393 222.066 10.2137 243.639 8.99146C296.296 5.69231 349.291 6.34188 402 8.58975"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>까지
+            </h1>
+
+            <div class="card-slider">
+                <div class="card-slider__card active">
+                    <img src="/static/images/chat.png" alt="ai-assistant" class="card-slider__img" /><br>
+                    <div class="card-slider__title">레시피 추천</div>
+                    <div class="card-slider__speech-wrapper">
+                        <div class="card-slider__speech">
+                            <div class="card-slider__speech-text">냉장고 속<br>재료를 입력하면<br>레시피를 추천해줘요!</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-slider__card active">
+                    <img src="/static/images/cooking-show.png" alt="frying-pan" class="card-slider__img" /><br>
+                    <div class="card-slider__title">꿀팁 레시피</div>
+                    <div class="card-slider__speech-wrapper">
+                        <div class="card-slider__speech">
+                            <div class="card-slider__speech-text">간편한 레시피가 있는<br>유튜브 채널과<br>블로그를 한 번에!</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-slider__card active">
+                    <img src="/static/images/roulette.png" alt="roulette" class="card-slider__img" /><br>
+                    <div class="card-slider__title">오늘 뭐 먹지?</div>
+                    <div class="card-slider__speech-wrapper">
+                        <div class="card-slider__speech">
+                            <div class="card-slider__speech-text">룰렛으로 메뉴를 골라주는<br>재미있는 기능, 고민 끝!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="team-cards-section">
+            <div class="team-cards-title-wrapper">
+                <h1 class="team-cards-title">F.A.M.E 크리에이터들</h1>
+
+                <!-- 화살표 SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 386 127" fill="none" class="team-cards-arrow">
+                    <path
+                        d="M2 123C9 36 84.5 17 124 26C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 2 232.5 2C310.5 2 366.5 79 376 118L356.5 105.5"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M2 123C9 36 84.5 17 124 26C217.764 47.3635 207 115 177.5 123C105.777 142.45 110.737 2 232.5 2C310.5 2 366.5 79 376 118L384 97"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+
+            <div class="team-cards-wrapper">
+                <div class="card card1">
+                    <div class="card-square"></div>
+                    <div class="card-content">
+                        <div class="sticker"></div>
+                        <div class="profile-pic">
+                            <img src="/static/images/frog.png" alt="정다연">
+                        </div>
+                        <h3>정다연</h3>
+                        <hr>
+                        <ul>
+                            <li>DB 설계</li>
+                            <li>데이터 전처리</li>
+                            <li>프론트엔드</li>
+                            <li>백엔드</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card card2">
+                    <div class="card-square"></div>
+                    <div class="card-content">
+                        <div class="sticker"></div>
+                        <div class="profile-pic">
+                            <img src="/static/images/cat.png" alt="김효주">
+                        </div>
+                        <h3>김효주</h3>
+                        <hr>
+                        <ul>
+                            <li>DB 설계</li>
+                            <li>데이터 전처리</li>
+                            <li>프론트엔드</li>
+                            <li>백엔드</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card card3">
+                    <div class="card-square"></div>
+                    <div class="card-content">
+                        <div class="sticker"></div>
+                        <div class="profile-pic">
+                            <img src="/static/images/fox.png" alt="마문희">
+                        </div>
+                        <h3>마문희</h3>
+                        <hr>
+                        <ul>
+                            <li>모델 구현</li>
+                            <li>백엔드</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card card4">
+                    <div class="card-square"></div>
+                    <div class="card-content">
+                        <div class="sticker"></div>
+                        <div class="profile-pic">
+                            <img src="/static/images/turtle.png" alt="윤형석">
+                        </div>
+                        <h3>윤형석</h3>
+                        <hr>
+                        <ul>
+                            <li>모델 구현</li>
+                            <li>백엔드</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card card5">
+                    <div class="card-square"></div>
+                    <div class="card-content">
+                        <div class="sticker"></div>
+                        <div class="profile-pic">
+                            <img src="/static/images/penguin.png" alt="정수련">
+                        </div>
+                        <h3>정수련</h3>
+                        <hr>
+                        <ul>
+                            <li>UI/UX 디자인</li>
+                            <li>프론트엔드</li>
+                            <li>백엔드</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% include 'footer.html' %}
+
+    <!-- 공통 JS -->
+    <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 변수 캐싱
+            const home = document.querySelector('.home');
+            const particles = document.querySelector('.floating-particles');
+            const homecontent = document.querySelector('.home-content');
+            const cards = [...document.querySelectorAll(".card-slider__card")];
+            const title = document.querySelector(".card-slider-title");
+            const circlePath = document.querySelector(".circle-anim path");
+            const underlinePath = document.querySelector(".underline-svg path");
+            const underlineTarget = document.querySelector(".underline-text");
+            const arrow = document.querySelector(".team-cards-arrow");
+            const teamTitle = document.querySelector(".team-cards-title");
+            const card1 = document.querySelector(".card1");
+
+            // --- 스크롤 이벤트 ---
+            let wasVisible = false;
+            let isAnimating = false;
+
+            window.addEventListener("scroll", () => {
+                // 파티클 z-index 강제 유지
+                if (particles) {
+                    particles.style.zIndex = '1';
+                }
+
+                if (homecontent) {
+                    homecontent.style.position = 'relative';
+                    homecontent.style.zIndex = '2';
+                }
+
+                // home 패럴랙스
+                if (home) {
+                    const scrolled = window.pageYOffset;
+                    const rate = scrolled * -0.5;
+                    home.style.top = `${rate}px`;
+                }
+
+                // arrow 애니메이션 및 visibility 체크
+                if (arrow) {
+                    const rect = arrow.getBoundingClientRect();
+                    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                    const isVisible = rect.top < windowHeight && rect.bottom > 0;
+
+                    if (isVisible && !wasVisible && !isAnimating) {
+                        isAnimating = true;
+                        animateArrow();
+                        setTimeout(() => {
+                            isAnimating = false;
+                        }, 2000); // 애니메이션 시간 + 여유
+                    }
+
+                    wasVisible = isVisible;
+                }
+            });
+
+            // --- 카드 슬라이더 초기화 및 마우스 움직임 기반 hover 처리 ---
+            if (cards.length > 0) {
+                const cardSpacing = 300;
+                const centerIndex = Math.floor(cards.length / 2);
+
+                // 카드 초기 위치 및 스타일 설정 함수
+                function updateCards() {
+                    cards.forEach((card, i) => {
+                        const offset = i - centerIndex;
+                        const positionX = offset * cardSpacing;
+                        card.style.transform = `translate(calc(-50% + ${positionX}px), -50%) scale(0.9)`;
+                        card.style.zIndex = 2;
+                        if (i === centerIndex) {
+                            card.style.transform = `translate(-50%, -50%) scale(1)`;
+                            card.style.zIndex = 3;
+                        }
+                    });
+                }
+                updateCards();
+
+                const container = document.querySelector(".card-slider");
+                if (container) {
+                    container.addEventListener("mousemove", (e) => {
+                        const rect = container.getBoundingClientRect();
+                        const mouseX = e.clientX - rect.left;
+
+                        let activeIndex = 0;
+                        let minDist = Infinity;
+                        cards.forEach((card, i) => {
+                            const offset = i - centerIndex;
+                            const cardCenterX = rect.width / 2 + offset * cardSpacing;
+                            const dist = Math.abs(mouseX - cardCenterX);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                activeIndex = i;
+                            }
+                        });
+
+                        cards.forEach((card, i) => {
+                            const offset = i - centerIndex;
+                            const positionX = offset * cardSpacing;
+                            if (i === activeIndex) {
+                                card.style.transform = `translate(calc(-50% + ${positionX}px), calc(-50% - 20px)) scale(1.15)`;
+                                card.style.zIndex = 10;
+                            } else if (i === centerIndex) {
+                                card.style.transform = `translate(-50%, -50%) scale(1)`;
+                                card.style.zIndex = 3;
+                            } else {
+                                card.style.transform = `translate(calc(-50% + ${positionX}px), -50%) scale(0.9)`;
+                                card.style.zIndex = 2;
+                            }
+                        });
+                    });
+
+                    container.addEventListener("mouseleave", () => {
+                        updateCards();
+                    });
+                }
+            }
+
+            // --- '요리의 즐거움' 동그라미 애니메이션 옵저버 ---
+            if (title && circlePath) {
+                const pathLength = circlePath.getTotalLength();
+                circlePath.style.strokeDasharray = pathLength;
+                circlePath.style.strokeDashoffset = pathLength;
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            circlePath.style.transition = "stroke-dashoffset 2s ease";
+                            circlePath.style.strokeDashoffset = 0;
+                        } else {
+                            circlePath.style.transition = "stroke-dashoffset 2s ease";
+                            circlePath.style.strokeDashoffset = pathLength;
+                        }
+                    });
+                }, { threshold: 0.5 });
+                observer.observe(title);
+            }
+
+            // --- '레시피 추천, 공유' 밑줄 애니메이션 옵저버 ---
+            if (underlinePath && underlineTarget) {
+                const pathLength = underlinePath.getTotalLength();
+                underlinePath.style.strokeDasharray = pathLength;
+                underlinePath.style.strokeDashoffset = pathLength;
+
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            underlinePath.style.transition = "stroke-dashoffset 1.5s ease";
+                            underlinePath.style.strokeDashoffset = 0;
+                        } else {
+                            underlinePath.style.transition = "stroke-dashoffset 1.5s ease";
+                            underlinePath.style.strokeDashoffset = pathLength;
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(underlineTarget);
+            }
+
+            // --- 팀 카드 화살표 초기 위치 및 애니메이션 함수 ---
+            if (arrow && teamTitle && card1) {
+                const wrapperRect = arrow.parentElement.getBoundingClientRect();
+                const titleRect = teamTitle.getBoundingClientRect();
+                const card1Rect = card1.getBoundingClientRect();
+
+                const offsetY = -50;
+                const left = titleRect.left - wrapperRect.left - 90;
+                const top = titleRect.top - wrapperRect.top + offsetY;
+                const endTop = card1Rect.top - wrapperRect.top;
+                const distanceY = endTop - (titleRect.top - wrapperRect.top) - 130;
+
+                arrow.style.position = "absolute";
+                arrow.style.left = `${left}px`;
+                arrow.style.top = `${top}px`;
+                arrow.style.width = `500px`;
+                arrow.style.height = `${distanceY}px`;
+                arrow.style.transform = "rotate(130deg) scaleY(-1)";
+                arrow.style.transformOrigin = "top left";
+
+                const paths = arrow.querySelectorAll("path");
+                let totalLength = 0;
+                paths.forEach(path => {
+                    totalLength += path.getTotalLength();
+                });
+
+                function animateArrow() {
+                    paths.forEach(path => {
+                        path.style.strokeDasharray = totalLength;
+                        path.style.strokeDashoffset = totalLength;
+                        path.style.transition = "none";
+                    });
+
+                    setTimeout(() => {
+                        paths.forEach(path => {
+                            path.style.transition = "stroke-dashoffset 1.5s linear";
+                            path.style.strokeDashoffset = "0";
+                        });
+                    }, 50);
+                }
+
+                // 첫 로드시 애니메이션 실행
+                animateArrow();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 뭐 먹지? | 냉장고를 부탁해</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  {% include 'header.html' %}
+
+  <main>
+    <div class="roulette-block">
+      <img src="../static/images/store-sign.png" class="store-sign">
+      <h1 class="roulette-title">오늘 뭐 먹지?</h1>
+      <div class="roulette-inner-box">
+        <img src="/static/images/sparkle-black.png" class="sparkle top">
+        <img src="/static/images/sparkle-black.png" class="sparkle top">
+        <img src="/static/images/sparkle-black.png" class="sparkle top">
+        <div class="pin pin-tl"></div>
+        <div class="pin pin-tr"></div>
+        <div class="pin pin-bl"></div>
+        <div class="pin pin-br"></div>
+
+        <div class="roulette-content">
+          <div class="wheel-wrapper">
+            <div class="wheel-container">
+              <div id="wheel" class="wheel wheel-idle"></div>
+              <img src="/static/images/wheel-arrow.png" class="wheel-arrow"></img>
+
+              <div id="rouletteResult" class="roulette-result-box"></div>
+              <div class="wheel-center-circle"><img src="/static/images/logo.png" class="wheelLogo"></div>
+            </div>
+          </div>
+        </div>
+        <img src="/static/images/sparkle-black.png" class="sparkle bottom">
+        <img src="/static/images/sparkle-black.png" class="sparkle bottom">
+        <img src="/static/images/sparkle-black.png" class="sparkle bottom">
+      </div>
+      <button id="scrollBtn">
+        <svg stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <div class="roulette-text-box">
+        <div class="roulette-subtitle">원하는 메뉴를 직접 입력해 룰렛을 돌려보세요!</div>
+        <div class="count-input">
+          <input id="countInput" type="number" min="2" max="10" value="4" class="input-count">
+          <button onclick="generateInputs()" class="btn-create">입력폼 생성</button>
+          <img src="/static/images/sparkle-black.png" class="sparkle end">
+          <img src="/static/images/sparkle-black.png" class="sparkle end">
+        </div>
+        <div class="input-overlay" id="inputOverlay">
+          <div id="menuInput" class="menu-input"></div>
+          <div class="btn-container">
+            <button class="btn-input-cancel">취소</button><button onclick="drawWheel()" class="btn-spin">시작</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {% include 'footer.html' %}
+
+  <!-- 공통 JS -->
+  <script src="{{ url_for('static', filename='base.js') }}"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 취소 버튼
+      const closeBtn = document.querySelector(".btn-input-cancel");
+      const inputOverlay = document.getElementById("inputOverlay");
+      closeBtn.addEventListener("click", () => {
+        inputOverlay.classList.remove('active');
+      });
+
+      let options = [];
+      let angle = 0;
+
+      const scrollBtn = document.getElementById('scrollBtn');
+      const target = document.querySelector('.roulette-text-box');
+
+      // 페이지 열리면 버튼 한 번만 보이게
+      scrollBtn.style.display = 'flex';
+
+      // 클릭 시 버튼 사라짐 + 살짝 스크롤
+      scrollBtn.addEventListener('click', () => {
+        window.scrollBy({ top: 500, behavior: 'smooth' });
+        scrollBtn.style.display = 'none';
+      });
+
+      // 스크롤 시 roulette-text-box의 10%만 내려가도 버튼 숨김
+      let buttonHidden = false;
+      window.addEventListener('scroll', () => {
+        if (buttonHidden) return;
+
+        const rect = target.getBoundingClientRect();
+        const targetHeight = rect.height;
+        const scrollFromTop = window.scrollY + window.innerHeight - (rect.top + window.scrollY);
+
+        if (scrollFromTop >= targetHeight * 0.1) { // 요소 높이 10% 이상 스크롤
+          scrollBtn.style.display = 'none';
+          buttonHidden = true;
+        }
+      });
+
+      // ✅ 숫자만큼 input 생성 + 오버레이 띄우기
+      window.generateInputs = function () {
+        const count = parseInt(document.getElementById('countInput').value);
+        const container = document.getElementById('menuInput');
+        const overlay = document.getElementById('inputOverlay');
+
+        if (isNaN(count) || count < 2) {
+          alert('2개 이상의 숫자를 입력하세요.');
+          return;
+        }
+
+        // ✅ 기존 결과 박스 내용 초기화
+        const result = document.getElementById('rouletteResult');
+        result.innerHTML = '';
+
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.placeholder = `${i + 1}번 메뉴`;
+          input.className = 'input-text';
+          container.appendChild(input);
+        }
+
+        overlay.classList.add('active');
+      };
+
+      // ✅ 룰렛 그리기 및 돌리기
+      window.drawWheel = function () {
+        const inputs = document.querySelectorAll('#menuInput input');
+        options = Array.from(inputs)
+          .map(input => input.value.trim())
+          .filter(v => v);
+
+        if (options.length < 2) {
+          return alert('최소 2개의 메뉴를 입력해주세요');
+        }
+
+        const overlay = document.getElementById('inputOverlay');
+        overlay.classList.remove('active');
+
+        // ✅ 스크롤 후 룰렛 실행
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 스크롤 애니메이션 끝난 뒤 실행
+        setTimeout(() => {
+          const wheel = document.getElementById('wheel');
+          wheel.classList.remove('wheel-idle');
+
+          const degreePerOption = 360 / options.length;
+          const colors = ['white', '#7e95fe'];
+
+          const gradient = options.map((_, i) => {
+            const color = colors[i % colors.length];
+            const start = i * degreePerOption;
+            const end = (i + 1) * degreePerOption - 0.5;
+            const borderStart = end;
+            const borderEnd = end + 0.5;
+            return `${color} ${start}deg ${end}deg, transparent ${borderStart}deg ${borderEnd}deg`;
+          }).join(',');
+
+          wheel.style.background = `conic-gradient(${gradient})`;
+
+          wheel.innerHTML = '';
+          options.forEach((text, i) => {
+            const label = document.createElement('div');
+            const midAngle = i * degreePerOption + degreePerOption / 2;
+            label.className = 'wheel-label';
+            label.style.transform = `rotate(${midAngle}deg) translateY(-130px)`;
+            label.innerHTML = `<div class="wheel-label" style="transform: rotate(${-midAngle}deg);">${text}</div>`;
+            wheel.appendChild(label);
+          });
+
+          const spinAmount = Math.floor(Math.random() * 360) + 1440;
+          angle += spinAmount;
+
+          wheel.style.transition = 'none';
+          wheel.style.transform = `rotate(${angle - spinAmount}deg)`;
+
+          requestAnimationFrame(() => {
+            wheel.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
+            wheel.style.transform = `rotate(${angle}deg)`;
+          });
+
+          const normalizedAngle = (angle % 360 + 360) % 360;
+          const selectedIndex = Math.floor((360 - normalizedAngle) / degreePerOption) % options.length;
+          const selected = options[selectedIndex];
+
+          setTimeout(() => {
+            const result = document.getElementById('rouletteResult');
+            result.innerHTML = `<div class="roulette-result-card">오늘은 <span>${selected}</span> !</div>`;
+          }, 4200);
+
+        }, 400); // 스크롤 올라간 후 0.4초 정도 뒤에 룰렛 실행
+      };
+    });
+  </script>
+
+</body>
+
+</html>
